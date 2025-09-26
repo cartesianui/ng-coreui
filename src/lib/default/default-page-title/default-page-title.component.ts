@@ -12,6 +12,12 @@ export class DefaultPageTitleComponent implements OnChanges {
     this._title = (title && title.trim()) || '<no title set>';
   }
 
+  _icon?: string = 'fa-file';
+  @Input()
+  set icon(icon: string) {
+    this._icon = (icon && icon.trim()) || 'fa-file';
+  }
+
   _breadcrumb: boolean = true;
   @Input()
   set breadcrumb(breadcrumb: boolean) {
