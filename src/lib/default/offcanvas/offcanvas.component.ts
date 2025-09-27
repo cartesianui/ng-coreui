@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-offcanvas',
-  templateUrl: './offcanvas.component.html'
+    selector: 'app-offcanvas',
+    templateUrl: './offcanvas.component.html',
+    standalone: false
 })
 export class OffcanvasComponent {
 

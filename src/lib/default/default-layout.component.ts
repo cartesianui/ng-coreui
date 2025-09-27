@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { INavData } from '@coreui/angular';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './default-layout.component.html'
+    selector: 'app-dashboard',
+    templateUrl: './default-layout.component.html',
+    standalone: false
 })
 export class DefaultLayoutComponent {
   public navItems: INavData[];
