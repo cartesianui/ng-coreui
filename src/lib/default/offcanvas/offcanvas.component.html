@@ -1,9 +1,18 @@
-<c-offcanvas placement="end" backdrop="false" scroll="true" id="{{id}}" visible="{{visible}}" (visibleChange)="this.visibleChange.emit($event)">
-  <c-offcanvas-header>
-    <h5 cOffcanvasTitle>{{title}}</h5>
-    <button cButtonClose class="text-reset" cOffcanvasToggle="{{id}}" aria-label="Close"></button>
-  </c-offcanvas-header>
-  <c-offcanvas-body>
+<c-offcanvas 
+  [placement]="'end'" 
+  [backdrop]="false" 
+  [scroll]="true" 
+  [id]="id" 
+  [visible]="visible" 
+  (visibleChange)="visibleChange.emit($event)">
+
+  <div cOffcanvasHeader>
+    <h5 cOffcanvasTitle>{{ title }}</h5>
+    <button cButtonClose class="text-reset" [cOffcanvasToggle]="id" aria-label="Close"></button>
+  </div>
+
+  <div cOffcanvasBody>
     <ng-content></ng-content>
-  </c-offcanvas-body>
+  </div>
+
 </c-offcanvas>

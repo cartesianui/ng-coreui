@@ -1,33 +1,69 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {CommonModule as CartesianCommonModule} from '@cartesianui/common';
+;
+
+import { CommonModule as CartesianCommonModule } from '@cartesianui/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+
 import {
   AvatarModule,
   BadgeModule,
   BreadcrumbModule,
-  // ButtonGroupModule,
   ButtonModule,
-  // CardModule,
   DropdownModule,
   FooterModule,
-  // FormModule,
   GridModule,
   HeaderModule,
-  // ListGroupModule,
   NavModule,
   ProgressModule,
   SharedModule as CoreUiAngularSharedModule,
   SidebarModule,
-  // TabsModule,
   UtilitiesModule,
-  OffcanvasModule
+  OffcanvasModule,
+  // Standalone CoreUI components/directives
+  ContainerComponent,
+  ShadowOnScrollDirective,
+  SidebarBrandComponent,
+  SidebarComponent,
+  SidebarFooterComponent,
+  SidebarHeaderComponent,
+  SidebarNavComponent,
+  SidebarToggleDirective,
+  SidebarTogglerDirective,
+  AvatarComponent,
+  BadgeComponent,
+  BreadcrumbRouterComponent,
+  DropdownComponent,
+  DropdownDividerDirective,
+  DropdownHeaderDirective,
+  DropdownItemDirective,
+  DropdownMenuDirective,
+  DropdownToggleDirective,
+  HeaderComponent,
+  HeaderNavComponent,
+  HeaderTogglerDirective,
+  NavItemComponent,
+  NavLinkDirective,
+
+  OffcanvasComponent as COffcanvasComponent,
+  OffcanvasBodyComponent,
+  OffcanvasHeaderComponent,
+  OffcanvasTitleDirective,
+  OffcanvasToggleDirective,
+  ButtonCloseDirective,
+
+  BreadcrumbComponent,
+  BreadcrumbItemComponent,
+  //BreadcrumbRouterService
 } from '@coreui/angular';
 
-import { IconModule, IconSetService } from '@coreui/icons-angular';
+import { IconModule, IconSetService, IconDirective } from '@coreui/icons-angular';
+
+// Import 3rd party modules
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 import {
   DefaultFooterComponent,
@@ -37,23 +73,30 @@ import {
   OffcanvasComponent
 } from './default';
 
-// Import 3rd party components
-import { NgScrollbarModule } from 'ngx-scrollbar';
-
-const APP_CONTAINERS = [OffcanvasComponent, DefaultFooterComponent, DefaultHeaderComponent, DefaultPageTitleComponent, DefaultLayoutComponent];
+const APP_CONTAINERS = [
+  OffcanvasComponent,
+  DefaultFooterComponent,
+  DefaultHeaderComponent,
+  DefaultPageTitleComponent,
+  DefaultLayoutComponent
+];
 
 @NgModule({
   imports: [
+    // Angular core
     CommonModule,
-    RouterModule,
-    CartesianCommonModule,
+    NgTemplateOutlet,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    CartesianCommonModule,
+
+    // 3rd party
     NgScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
-    // ChartsModule,
+
+    // CoreUI NgModules
     IconModule,
     AvatarModule,
     BreadcrumbModule,
@@ -62,21 +105,53 @@ const APP_CONTAINERS = [OffcanvasComponent, DefaultFooterComponent, DefaultHeade
     GridModule,
     HeaderModule,
     SidebarModule,
-    // IconModule,
     NavModule,
     ButtonModule,
-    // FormModule,
-    // UtilitiesModule,
-    // ButtonGroupModule,
-    // ReactiveFormsModule,
-    CoreUiAngularSharedModule,
-    // TabsModule,
-    // ListGroupModule,
     ProgressModule,
     BadgeModule,
-    // ListGroupModule,
-    // CardModule,
-    OffcanvasModule
+    UtilitiesModule,
+    CoreUiAngularSharedModule,
+    OffcanvasModule,
+
+    // Standalone CoreUI components/directives
+    SidebarComponent,
+    SidebarHeaderComponent,
+    SidebarBrandComponent,
+    SidebarNavComponent,
+    SidebarFooterComponent,
+    SidebarToggleDirective,
+    SidebarTogglerDirective,
+    ContainerComponent,
+    IconDirective,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    ShadowOnScrollDirective,
+    AvatarComponent,
+    BadgeComponent,
+    BreadcrumbRouterComponent,
+    DropdownComponent,
+    DropdownDividerDirective,
+    DropdownHeaderDirective,
+    DropdownItemDirective,
+    DropdownMenuDirective,
+    DropdownToggleDirective,
+    HeaderComponent,
+    HeaderNavComponent,
+    HeaderTogglerDirective,
+    NavItemComponent,
+    NavLinkDirective,
+
+    // CoreUI Offcanvas standalone components
+    COffcanvasComponent,
+    OffcanvasBodyComponent,
+    OffcanvasHeaderComponent,
+    OffcanvasTitleDirective,
+    OffcanvasToggleDirective,
+    ButtonCloseDirective,
+
+    BreadcrumbComponent,
+    BreadcrumbItemComponent
   ],
   declarations: [...APP_CONTAINERS],
   providers: [
@@ -84,7 +159,8 @@ const APP_CONTAINERS = [OffcanvasComponent, DefaultFooterComponent, DefaultHeade
   ],
   exports: [
     DefaultPageTitleComponent,
-    OffcanvasComponent
+    OffcanvasComponent,
+    //BreadcrumbRouterService
   ]
 })
 export class BoLayoutModule {
@@ -98,7 +174,7 @@ export class BoLayoutModule {
   static forFeature(): ModuleWithProviders<BoLayoutModule> {
     return {
       ngModule: BoLayoutModule,
-      providers: [],
-    }
+      providers: []
+    };
   }
 }

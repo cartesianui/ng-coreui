@@ -1,0 +1,163 @@
+/* You can add global styles to this file, and also import other style files */
+@use "sass:color";
+
+@use 'variables' as *;
+
+// Import styles with default layout.
+@use "@coreui/coreui/scss/coreui" as * with (
+  $enable-deprecation-messages: false,
+
+  // Color system
+  $white: $cartesian-white, 
+  $gray-base: $cartesian-gray-base, 
+  $gray-100: $cartesian-gray-100,
+  $gray-200: $cartesian-gray-200, 
+  $gray-300: $cartesian-gray-300, 
+  $gray-400: $cartesian-gray-400, 
+  $gray-500: $cartesian-gray-500, 
+  $gray-600: $cartesian-gray-600, 
+  $gray-700: $cartesian-gray-700, 
+  $gray-800: $cartesian-gray-800, 
+  $gray-900: $cartesian-gray-900, 
+  $black: $cartesian-black,
+
+
+  $blue: $cartesian-blue,
+  $indigo: $cartesian-indigo, 
+  $purple: $cartesian-purple, 
+  $pink: $cartesian-pink, 
+  $red: $cartesian-red,
+  $orange: $cartesian-orange,
+  $yellow: $cartesian-yellow, 
+  $green: $cartesian-green,
+  $teal: $cartesian-teal,
+  $cyan: $cartesian-cyan,
+
+  $primary:   $indigo, 
+  $secondary: #6c757d,   
+  $success:   $green,  
+  $info:      $teal,    
+  $warning:   $yellow,  
+  $danger:    $red,   
+  $light:     $gray-200, 
+  $dark:      $gray-900, 
+
+  $primary-dark: #6169d0,     
+  $secondary-dark: #212233,
+  $success-dark: #1b9e3e,
+  $info-dark: #2982cc,
+  $warning-dark: #f6960b,
+  $danger-dark: #d93737,
+  $light-dark: $gray-100,
+  $dark-dark: $gray-900,
+
+  // Options
+  $enable-rounded: false,
+  $enable-shadows: true,
+
+  // Gradient
+  $gradient: $cartesian-gradient,
+
+  // Body
+  $body-bg: $cartesian-body-bg,
+  $body-color: $cartesian-body-color,
+
+  // Links
+  $link-decoration: none,
+  $link-hover-decoration: none,
+
+  // scss-docs-start container-max-widths
+  $container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1425px
+  ),
+
+  // Typography
+  $font-family-sans-serif: $cartesian-body-font-family, 
+  $font-family-monospace: $cartesian-font-monospace, 
+  $font-size-base: $cartesian-body-font-size,
+  $line-height-base: $cartesian-body-line-height,
+
+  // Input base
+  $input-bg: #f9fafb,
+  $input-border-color: #d1d5db,
+  $input-border-radius: 0.5rem,
+  $input-padding-y: 0.65rem,
+  $input-padding-x: 0.5rem,
+  $input-color: #111827,
+  $input-placeholder-color: #9ca3af,
+
+  // On focus
+  $input-focus-bg: #ffffff,
+  $input-focus-border-color: $cartesian-blue,
+  $input-focus-box-shadow: 0 0 0 0.15rem rgba($cartesian-blue, 0.25),
+
+  // Validation (optional override)
+  $form-feedback-valid-color: $green,
+  $form-feedback-invalid-color: $red,
+
+  $form-label-font-weight: 500,
+  $form-label-margin-bottom: 0.25rem,
+  $form-label-color: #374151, // Tailwind’s gray-700
+
+  $form-text-margin-top: 0.25rem,
+  $input-group-addon-bg: #f1f5f9,
+
+  $input-group-addon-border-color: $input-border-color,
+  $input-group-addon-padding-y: 0.65rem,
+  $input-group-addon-padding-x: 0.75rem,
+
+  $border-radius: 0.5rem,
+
+  $btn-font-weight: 500,
+  $btn-font-size: 0.95rem,
+  $btn-padding-y: 0.6rem,
+  $btn-padding-x: 1.25rem,
+  $btn-border-radius: 0.5rem,
+  $btn-line-height: 1.4,
+
+  $btn-hover-bg-shade-amount: 7%,
+  $btn-hover-border-shade-amount: 7%,
+
+  $btn-focus-box-shadow: 0 0 0 0.15rem rgba($cartesian-indigo, 0.25),
+  $btn-transition: all 0.25s ease-in-out,
+
+  // Navs
+  $nav-tabs-border-color: $primary, // $gray-300,
+  $nav-tabs-border-radius: 0, // $border-radius,
+  $nav-tabs-link-active-color: $white, // $gray-700,
+  $nav-tabs-link-active-bg: $primary, // $body-bg,
+  $nav-tabs-link-active-border-color: $primary, //$gray-300 $gray-300 $nav-tabs-link-active-bg,
+
+  // Breadcrumbs
+  $breadcrumb-divider: ">",
+
+  // CoreUi Off Canvas
+  $offcanvas-horizontal-width: 100%,
+  $offcanvas-backdrop-opacity: 0,
+
+  $sidebar-narrow-width: 3.4rem,
+
+  // Bs Date Picker Color
+  // $theme-green:    $primary
+);
+
+// Import Chart.js custom tooltips styles
+@use "@coreui/chartjs/scss/coreui-chartjs";
+
+// Custom styles for this theme
+@use "theme";
+
+// Some temp fixes
+//@use "fixes";
+
+// If you want to add custom CSS you can put it here.
+@use "custom";
+
+// Examples
+// We use those styles to show code examples, you should remove them in your application.
+@use "examples";
+
