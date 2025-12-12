@@ -73,12 +73,23 @@ import {
   OffcanvasComponent
 } from './default';
 
+import {
+  CollapsedFooterComponent,
+  CollapsedHeaderComponent,
+  CollapsedPageTitleComponent,
+  CollapsedLayoutComponent
+} from './collapsed';
+
 const APP_CONTAINERS = [
   OffcanvasComponent,
   DefaultFooterComponent,
   DefaultHeaderComponent,
   DefaultPageTitleComponent,
-  DefaultLayoutComponent
+  DefaultLayoutComponent,
+  CollapsedFooterComponent,
+  CollapsedHeaderComponent,
+  CollapsedPageTitleComponent,
+  CollapsedLayoutComponent,
 ];
 
 @NgModule({
