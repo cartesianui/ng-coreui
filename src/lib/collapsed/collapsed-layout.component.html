@@ -1,5 +1,5 @@
 <!--sidebar-->
-<c-sidebar #sidebar="cSidebar" class="d-print-none sidebar sidebar-fixed" colorScheme="dark" id="sidebar" visible>
+<c-sidebar #sidebar="cSidebar" class="d-print-none sidebar sidebar-fixed sidebar-narrow" colorScheme="light" id="sidebar" visible>
 
 <c-sidebar-header class="border-bottom">
   <c-sidebar-brand
@@ -10,7 +10,7 @@
     }"
     [brandNarrow]="{
       src: 'assets/img/brand/icon.png',
-      width: 46,
+      width: 36,
       alt: 'CaretsianUI Icon'
     }"
     routerLink="./"
@@ -38,10 +38,10 @@
     sidebarId="sidebar1"
   />
   <!--app-body-->
-  <div class="body flex-grow-1 px-3">
-    <c-container breakpoint="lg" class="h-auto">
+  <div class="body flex-grow-1 px-3 w-100">
+    <div class="h-auto w-100">
       <router-outlet></router-outlet>
-    </c-container>
+    </div>
   </div>
   <!--app footer-->
   <app-default-footer></app-default-footer>

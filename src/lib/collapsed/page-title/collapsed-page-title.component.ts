@@ -1,12 +1,12 @@
 import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
 
 @Component({
-    selector: 'default-page-title, page-title',
-    styleUrls: ['./default-page-title.component.scss'],
-    templateUrl: './default-page-title.component.html',
+    selector: 'collapsed-page-title, page-title',
+    styleUrls: ['./collapsed-page-title.component.scss'],
+    templateUrl: './collapsed-page-title.component.html',
     standalone: false
 })
-export class DefaultPageTitleComponent implements OnChanges {
+export class CollapsedPageTitleComponent implements OnChanges {
   _title: string = '<no title set>';
   @Input()
   set title(title: string) {

@@ -1,0 +1,213 @@
+
+@use "sass:color";
+
+@use 'fonts';
+
+// PRIMARY COLORS - updated for vibrancy and balance
+$cartesian-blue:   #1a73e8; 
+$cartesian-indigo: #5a67d8; 
+$cartesian-purple: #7e5bef; 
+$cartesian-pink:   #ff5d8f; 
+$cartesian-red:    #e63946; 
+$cartesian-orange: #f76707; 
+$cartesian-yellow: #facc15;  
+$cartesian-green:  #10b981; 
+$cartesian-teal:   #14b8a6; 
+$cartesian-cyan:   #06b6d4;
+
+// NEUTRALS
+$cartesian-white:       #ffffff;
+$cartesian-gray-100:    #f8f9fa;
+$cartesian-gray-200:    #e9ecef;
+$cartesian-gray-300:    #dee2e6;
+$cartesian-gray-400:    #ced4da;
+$cartesian-gray-500:    #adb5bd;
+$cartesian-gray-600:    #6c757d;
+$cartesian-gray-700:    #495057;
+$cartesian-gray-800:    #343a40;
+$cartesian-gray-900:    #212529;
+$cartesian-gray-base:   #343a40;
+$cartesian-black:       #0b0c0e;
+
+
+$cartesian-font-sans-serif: 'Nunito', sans-serif;
+$cartesian-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+$cartesian-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+$cartesian-body-font-family: Nunito, sans-serif;
+$cartesian-body-font-size: 1rem;
+$cartesian-body-font-weight: 400;
+$cartesian-body-line-height: 1.6;
+$cartesian-body-color: $cartesian-gray-700;
+$cartesian-body-bg: #fafbfe;
+
+// Variable overrides
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Color system
+$white: $cartesian-white; // #fff;
+$gray-base: $cartesian-gray-base; // #3c4b64;
+$gray-100: $cartesian-gray-100; // #ebedef;
+$gray-200: $cartesian-gray-200; // #d8dbe0;
+$gray-300: $cartesian-gray-300; // #c4c9d0;
+$gray-400: $cartesian-gray-400; // #b1b7c1;
+$gray-500: $cartesian-gray-500; // #9da5b1;
+$gray-600: $cartesian-gray-600; // #8a93a2;
+$gray-700: $cartesian-gray-700; // #768192;
+$gray-800: $cartesian-gray-800; // #636f83;
+$gray-900: $cartesian-gray-900; // #4f5d73;
+$black: $cartesian-black; // #000015;
+
+
+
+$blue: $cartesian-blue; // #0d6efd;
+$indigo: $cartesian-indigo; // #6610f2;
+$purple: $cartesian-purple; // #6f42c1;
+$pink: $cartesian-pink; // #d63384;
+$red: $cartesian-red; // #dc3545;
+$orange: $cartesian-orange; // #fd7e14;
+$yellow: $cartesian-yellow; // #ffc107;
+$green: $cartesian-green; // #198754;
+$teal: $cartesian-teal; // #20c997;
+$cyan: $cartesian-cyan; // #0dcaf0;
+
+
+$primary:   $indigo;   // #321fdb or your $cartesian-indigo
+$secondary: #6c757d;   // or $gray-600 / $cartesian-gray-600
+$success:   $green;    // $cartesian-green
+$info:      $teal;     // $cartesian-teal
+$warning:   $yellow;   // $cartesian-yellow
+$danger:    $red;      // $cartesian-red
+$light:     $gray-200; // or $cartesian-gray-200
+$dark:      $gray-900; // or $cartesian-gray-900
+
+$primary-dark: #6169d0;     // used in your dark theme or hover states
+$secondary-dark: #212233;
+$success-dark: #1b9e3e;
+$info-dark: #2982cc;
+$warning-dark: #f6960b;
+$danger-dark: #d93737;
+$light-dark: $gray-100;
+$dark-dark: $gray-900;
+
+
+// Options
+$enable-rounded: false;
+$enable-shadows: true;
+
+// Gradient
+$gradient: $cartesian-gradient;
+
+// Body
+$body-bg: $cartesian-body-bg;
+$body-color: $cartesian-body-color;
+
+// Links
+$link-decoration: none;
+$link-hover-decoration: none;
+
+// scss-docs-start container-max-widths
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1425px
+);
+
+// Typography
+$font-family-sans-serif: $cartesian-body-font-family; 
+$font-family-monospace: $cartesian-font-monospace; 
+$font-size-base: $cartesian-body-font-size;
+$line-height-base: $cartesian-body-line-height;
+
+// Input base
+$input-bg: #f9fafb;
+$input-border-color: #d1d5db;
+$input-border-radius: 0.5rem;
+$input-padding-y: 0.65rem;
+$input-padding-x: 0.5rem;
+$input-color: #111827;
+$input-placeholder-color: #9ca3af;
+
+// On focus
+$input-focus-bg: #ffffff;
+$input-focus-border-color: $cartesian-blue;
+$input-focus-box-shadow: 0 0 0 0.15rem rgba($cartesian-blue, 0.25);
+
+// Validation (optional override)
+$form-feedback-valid-color: $green;
+$form-feedback-invalid-color: $red;
+
+$form-label-font-weight: 500;
+$form-label-margin-bottom: 0.25rem;
+$form-label-color: #374151; // Tailwind’s gray-700
+
+$form-group-margin-bottom: 1.25rem; // Give more breathing room
+$form-text-margin-top: 0.25rem;
+$input-group-addon-bg: #f1f5f9;
+
+$input-group-addon-border-color: $input-border-color;
+$input-group-addon-padding-y: 0.65rem;
+$input-group-addon-padding-x: 0.75rem;
+$btn-border-radius: 0.5rem;
+
+$font-size-base: 1rem;
+$line-height-base: 1.6;
+$border-radius: 0.5rem;
+
+$btn-font-weight: 500;
+$btn-font-size: 0.95rem;
+$btn-padding-y: 0.6rem;
+$btn-padding-x: 1.25rem;
+$btn-border-radius: 0.5rem;
+$btn-line-height: 1.4;
+
+$btn-primary-bg: $cartesian-indigo;
+$btn-primary-border-color: $btn-primary-bg;
+$btn-primary-color: #fff;
+
+$btn-hover-bg-shade-amount: 7%;
+$btn-hover-border-shade-amount: 7%;
+
+// $btn-primary-hover-bg: color.adjust($btn-primary-bg,  $lightness: -6%);
+// $btn-primary-hover-border: $btn-primary-hover-bg;
+
+// $btn-secondary-bg: $gray-200;
+// $btn-secondary-color: #111827;
+// $btn-secondary-border-color: $gray-300;
+
+// $btn-secondary-hover-bg: $gray-300;
+// $btn-secondary-hover-border-color: $gray-400;
+
+// $btn-outline-primary-color: $cartesian-indigo;
+// $btn-outline-primary-border-color: $cartesian-indigo;
+
+// $btn-outline-primary-hover-bg: $cartesian-indigo;
+// $btn-outline-primary-hover-color: #fff;
+
+// $btn-icon-padding-y: 0.5rem;
+// $btn-icon-padding-x: 0.6rem;
+// $btn-icon-size: 1.25rem;
+
+$btn-focus-box-shadow: 0 0 0 0.15rem rgba($cartesian-indigo, 0.25);
+$btn-transition: all 0.25s ease-in-out;
+
+// Navs
+$nav-tabs-border-color: $primary; // $gray-300;
+$nav-tabs-border-radius: 0; // $border-radius;
+$nav-tabs-link-active-color: $white; // $gray-700;
+$nav-tabs-link-active-bg: $primary; // $body-bg;
+$nav-tabs-link-active-border-color: $primary; //$gray-300 $gray-300 $nav-tabs-link-active-bg;
+
+// Breadcrumbs
+$breadcrumb-divider: ">";
+
+// CoreUi Off Canvas
+$offcanvas-horizontal-width: 100%;
+$offcanvas-backdrop-opacity: 0;
+
+// Bs Date Picker Color
+$theme-green:    $primary !default;

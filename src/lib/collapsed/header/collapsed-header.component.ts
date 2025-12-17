@@ -2,12 +2,12 @@ import { Component, computed, inject, Input } from '@angular/core';
 import { HeaderComponent, ColorModeService } from '@coreui/angular';
 
 @Component({
-  selector: 'app-default-header',
-  templateUrl: './default-header.component.html',
-  styleUrls: ['./default-header.component.scss'],
+  selector: 'app-collapsed-header',
+  templateUrl: './collapsed-header.component.html',
+  styleUrls: ['./collapsed-header.component.scss'],
   standalone: false
 })
-export class DefaultHeaderComponent extends HeaderComponent {
+export class CollapsedHeaderComponent extends HeaderComponent {
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
 
