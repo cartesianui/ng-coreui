@@ -15,9 +15,10 @@ $cartesian-green:  #10b981;
 $cartesian-teal:   #14b8a6; 
 $cartesian-cyan:   #06b6d4;
 
-// NEUTRALS
+// NEUTRALS - Phase 3: Extended gray scale inspired by Vuexy
 $cartesian-white:       #ffffff;
-$cartesian-gray-100:    #f8f9fa;
+$cartesian-gray-50:     #f8f9fa;  // Vuexy-inspired lighter gray
+$cartesian-gray-100:    #f1f3f5;  // Slightly darker than before
 $cartesian-gray-200:    #e9ecef;
 $cartesian-gray-300:    #dee2e6;
 $cartesian-gray-400:    #ced4da;
@@ -30,10 +31,43 @@ $cartesian-gray-base:   #343a40;
 $cartesian-black:       #0b0c0e;
 
 
-$cartesian-font-sans-serif: 'Nunito', sans-serif;
-$cartesian-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+// Typography - Phase 3: Vuexy-inspired comprehensive font stack
+$cartesian-font-sans-serif:
+  'Nunito',
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  "Oxygen",
+  "Ubuntu",
+  "Cantarell",
+  "Fira Sans",
+  "Droid Sans",
+  "Helvetica Neue",
+  sans-serif;
+
+$cartesian-font-monospace:
+  "SFMono-Regular",
+  Menlo,
+  Monaco,
+  Consolas,
+  "Liberation Mono",
+  "Courier New",
+  monospace;
+
 $cartesian-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-$cartesian-body-font-family: Nunito, sans-serif;
+
+$cartesian-body-font-family:
+  'Nunito',
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  "Oxygen",
+  "Ubuntu",
+  "Cantarell",
+  "Fira Sans",
+  "Droid Sans",
+  "Helvetica Neue",
+  sans-serif;
 $cartesian-body-font-size: 1rem;
 $cartesian-body-font-weight: 400;
 $cartesian-body-line-height: 1.6;

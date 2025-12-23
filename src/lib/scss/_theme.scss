@@ -43,6 +43,24 @@ body {
   .sidebar-toggler {
     margin-inline-end: auto;
   }
+
+  // Hide text content in narrow mode - show only icons
+  c-sidebar-nav-link-content {
+    display: none;
+  }
+
+  // Hide group text nodes (text that's not wrapped in elements)
+  .nav-group-toggle {
+    font-size: 0; // Hide text nodes
+
+    .nav-icon {
+      font-size: 1rem; // Restore icon size
+    }
+  }
+
+  .nav-link {
+    // justify-content: center;
+  }
 }
 
 .header > .container-fluid + .container-fluid {
