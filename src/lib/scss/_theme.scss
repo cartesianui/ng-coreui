@@ -14,7 +14,7 @@ body {
 
 .header > .container-fluid,
 .sidebar-header {
-  min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+  min-height: calc(3rem + 1px); // Reduced from 4rem for denser header
 }
 
 .sidebar-brand-full {
@@ -30,7 +30,7 @@ body {
   .nav-link {
     display: flex;
     align-items: center;
-    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+    min-height: calc(3rem + 1px); // Reduced from 4rem for denser header
   }
 }
 
@@ -46,7 +46,7 @@ body {
 }
 
 .header > .container-fluid + .container-fluid {
-  min-height: 3rem;
+  min-height: 2.25rem; // Reduced from 3rem for denser secondary header row
 }
 
 .footer {
