@@ -14,7 +14,7 @@ body {
 
 .header > .container-fluid,
 .sidebar-header {
-  min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+  min-height: calc(3rem + 1px); // Reduced from 4rem for denser header
 }
 
 .sidebar-brand-full {
@@ -30,7 +30,7 @@ body {
   .nav-link {
     display: flex;
     align-items: center;
-    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+    min-height: calc(3rem + 1px); // Reduced from 4rem for denser header
   }
 }
 
@@ -43,10 +43,148 @@ body {
   .sidebar-toggler {
     margin-inline-end: auto;
   }
+
+  // Hide text content in narrow mode - show only icons
+  c-sidebar-nav-link-content {
+    display: none;
+  }
+
+  // Hide group text nodes (text that's not wrapped in elements)
+  .nav-group-toggle {
+    font-size: 0; // Hide text nodes
+
+    .nav-icon {
+      font-size: 1rem; // Restore icon size
+    }
+  }
+
+  .nav-link {
+    // justify-content: center;
+  }
+}
+
+// ============================================================
+// HEADER USER DROPDOWN MODERNIZATION - Phase 3
+// Clean, modern user profile dropdown with circular avatar
+// ============================================================
+.avatar-img {
+  border-radius: 50%;
+}
+
+
+.header {
+  // User dropdown menu - modern styling
+  .dropdown-menu {
+    min-width: 15rem;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+    // User profile header section
+    .dropdown-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--cui-border-color);
+      margin-bottom: 0.25rem;
+
+      // Avatar styling - make circular
+      img,
+      .avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      // User info text
+      > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+
+        // User name
+        strong {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--cui-heading-color);
+        }
+
+        // User role/subtitle
+        small {
+          font-size: 0.75rem;
+          color: var(--cui-secondary-color);
+        }
+      }
+    }
+
+    // Dropdown items - clean modern style
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
+      color: var(--cui-body-color);
+      border-radius: 0.375rem;
+      margin: 0 0.375rem;
+      transition: all 0.2s ease;
+
+      // Icons in menu items
+      i,
+      svg {
+        width: 1.125rem;
+        font-size: 1rem;
+        color: var(--cui-secondary-color);
+        transition: color 0.2s ease;
+      }
+
+      // Hover state
+      &:hover {
+        background-color: var(--cui-tertiary-bg);
+        color: var(--cui-emphasis-color);
+
+        i,
+        svg {
+          color: var(--cui-primary);
+        }
+      }
+
+      // Badge styling (for notifications count, etc.)
+      .badge {
+        margin-left: auto;
+        font-size: 0.6875rem;
+        padding: 0.25rem 0.5rem;
+      }
+    }
+
+    // Divider
+    .dropdown-divider {
+      margin: 0.375rem 0;
+    }
+
+    // Logout button - distinctive styling
+    .dropdown-item:last-child,
+    .dropdown-item.text-danger {
+      color: var(--cui-primary);
+      font-weight: 500;
+
+      &:hover {
+        background-color: var(--cui-primary-bg-subtle);
+        color: var(--cui-primary);
+      }
+
+      i,
+      svg {
+        color: var(--cui-primary);
+      }
+    }
+  }
 }
 
 .header > .container-fluid + .container-fluid {
-  min-height: 3rem;
+  min-height: 2.25rem; // Reduced from 3rem for denser secondary header row
 }
 
 .footer {
