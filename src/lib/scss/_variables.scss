@@ -31,9 +31,9 @@ $cartesian-gray-base:   #343a40;
 $cartesian-black:       #0b0c0e;
 
 
-// Typography - Phase 3: Vuexy-inspired comprehensive font stack
+// Typography - Phase 3: Vuexy-inspired comprehensive font stack with Public Sans
 $cartesian-font-sans-serif:
-  'Nunito',
+  "Public Sans",
   -apple-system,
   BlinkMacSystemFont,
   "Segoe UI",
@@ -57,7 +57,7 @@ $cartesian-font-monospace:
 $cartesian-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
 
 $cartesian-body-font-family:
-  'Nunito',
+  "Public Sans",
   -apple-system,
   BlinkMacSystemFont,
   "Segoe UI",

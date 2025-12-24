@@ -163,6 +163,24 @@
   $offcanvas-backdrop-opacity: 0,
 
   // ============================================================
+  // DROPDOWN MODERNIZATION - Phase 3
+  // Compact dropdown menus for header and user profile
+  // ============================================================
+
+  // Dropdown container - minimal padding
+  $dropdown-padding-y: 0.375rem,
+  $dropdown-padding-x: 0,
+  $dropdown-font-size: 0.875rem,          // 14px - compact
+
+  // Dropdown items - tight spacing
+  $dropdown-item-padding-y: 0.5rem,       // Reduced vertical padding
+  $dropdown-item-padding-x: 0.875rem,     // Reduced horizontal padding
+
+  // Dropdown header - compact
+  $dropdown-header-padding-y: 0.375rem,
+  $dropdown-header-padding-x: 0.875rem,
+
+  // ============================================================
   // SIDEBAR MODERNIZATION - Phase 1 + Phase 3 refinements
   // Maximize screen real estate with dense, readable navigation
   // ============================================================
@@ -187,10 +205,15 @@
   $sidebar-nav-link-padding-x: 0.75rem,
   $sidebar-nav-link-border-radius: 0.375rem,
 
+  // Sidebar hover colors - use primary color in light theme
+  // $sidebar-nav-link-hover-color: var(--cui-primary),
+  // $sidebar-nav-link-hover-bg: var(--cui-primary-bg-subtle),
+  // $sidebar-nav-link-hover-icon-color: var(--cui-primary),
+
   // Sidebar narrow/collapsed mode - Phase 3: slightly wider for better usability
   $sidebar-narrow-width: 3.5rem,
   $sidebar-narrow-nav-link-padding-y: 0.5rem,
-  $sidebar-narrow-nav-link-padding-x: 0.5rem,
+  $sidebar-narrow-nav-link-padding-x: 0.25rem, // Minimal padding for narrow mode
 
   // Sidebar icons - tighter spacing and size
   $sidebar-nav-link-icon-margin: 0.5rem,
