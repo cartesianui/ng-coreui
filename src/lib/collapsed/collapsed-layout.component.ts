@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PermissionCheckerService } from '@cartesianui/core';
 import { INavData } from '@coreui/angular';
 import { INavDataWithPermission } from '../types';
+import { NavFilterService } from '../services/nav-filter.service';
 
 function isOverflown(element: HTMLElement) {
   return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
@@ -15,6 +16,7 @@ function isOverflown(element: HTMLElement) {
 })
 export class CollapsedLayoutComponent implements AfterViewInit {
   protected permissonService = inject(PermissionCheckerService);
+  private navFilterService = inject(NavFilterService);
 
   public navItems: INavDataWithPermission[];
   @ViewChild('sidebar') sidebar: any;
@@ -22,7 +24,14 @@ export class CollapsedLayoutComponent implements AfterViewInit {
 
   public constructor(private route: ActivatedRoute) {
     const grantedPermissions = this.permissonService.getGrantedPermissions() as unknown as string[];
-    this.navItems = this.filterNavByPermissions(route.snapshot.data['navItems'], grantedPermissions);
+    const assignedRoles = this.permissonService.getAllAssignedRoles();
+
+    this.navItems = this.navFilterService.filterNavByPermissionsAndRoles(
+      route.snapshot.data['navItems'],
+      grantedPermissions,
+      assignedRoles,
+      false // Set to true to enable debug logging
+    );
   }
 
   ngAfterViewInit(): void {
@@ -45,29 +54,4 @@ export class CollapsedLayoutComponent implements AfterViewInit {
   //     }, 50);
   //   }
   // }
-
-  private filterNavByPermissions(items: INavDataWithPermission[], granted: string[]): INavDataWithPermission[] {
-    return items
-      .map((item) => {
-        // Always keep title and divider
-        if (item.title || item.divider) return item;
-
-        // Check if item has permission requirement
-        const hasPermission = !item.permission || item.permission.some((p) => granted.includes(p));
-
-        // Handle children recursively
-        if (item.children?.length) {
-          const filteredChildren = this.filterNavByPermissions(item.children, granted);
-
-          // If children exist after filtering, return parent with children
-          if (filteredChildren.length > 0) {
-            return { ...item, children: filteredChildren };
-          }
-        }
-
-        // If no children, return only items user has permission to view
-        return hasPermission ? item : null;
-      })
-      .filter(Boolean) as INavDataWithPermission[];
-  }
 }
