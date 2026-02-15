@@ -1,5 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { HeaderComponent, ColorModeService } from '@coreui/angular';
+import { TokenService } from '@cartesianui/core';
 
 @Component({
   selector: 'app-default-header',
@@ -9,6 +10,7 @@ import { HeaderComponent, ColorModeService } from '@coreui/angular';
 })
 export class DefaultHeaderComponent extends HeaderComponent {
   readonly #colorModeService = inject(ColorModeService);
+  readonly #tokenService = inject(TokenService);
   readonly colorMode = this.#colorModeService.colorMode;
 
   readonly colorModes = [
@@ -102,4 +104,10 @@ export class DefaultHeaderComponent extends HeaderComponent {
     { id: 3, title: 'Add new layouts', value: 75, color: 'info' },
     { id: 4, title: 'Angular Version', value: 100, color: 'success' }
   ];
+
+  logout(): void {
+    this.#tokenService.clearToken();
+    this.#tokenService.clearRefreshToken();
+    location.href = '/';
+  }
 }
