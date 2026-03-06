@@ -1,19 +1,11 @@
 {
-  "extends": "../../.eslintrc.json",
-  "ignorePatterns": [
-    "!**/*"
-  ],
+  "extends": "../../../.eslintrc.json",
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "parserOptions": {
-        "project": [
-          "projects/coreui/tsconfig.lib.json",
-          "projects/coreui/tsconfig.spec.json"
-        ],
-        "createDefaultProgram": true
+        "projectService": true
       },
       "rules": {
         "@angular-eslint/directive-selector": [
@@ -35,9 +27,7 @@
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
+      "files": ["*.html"],
       "rules": {}
     }
   ]
