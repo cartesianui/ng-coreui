@@ -272,6 +272,9 @@
 // Import Chart.js custom tooltips styles
 @use "@coreui/chartjs/scss/coreui-chartjs";
 
+// Datatable base styles
+@use "datatable";
+
 // Custom styles for this theme
 @use "theme";
 

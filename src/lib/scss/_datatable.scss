@@ -1,0 +1,326 @@
+@use 'variables' as *;
+
+// ============================================================
+// DATATABLE - Clean, modern table design
+// Base styles shared across all themes
+// ============================================================
+
+.ngx-datatable {
+  font-size: 0.875rem; // 14px
+
+  &.material {
+    box-shadow: none !important;
+
+    // ─── Header ──────────────────────────────────────
+    .datatable-header {
+      text-transform: none;
+
+      .datatable-header-inner {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+      }
+
+      .datatable-header-cell {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.25rem 0.75rem !important;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: $gray-700;
+        line-height: 1.3;
+        letter-spacing: 0.01em;
+
+        .datatable-header-cell-label {
+          color: $gray-700;
+        }
+
+        .sort-btn {
+          opacity: 0.5;
+        }
+
+        &:hover .sort-btn {
+          opacity: 1;
+        }
+      }
+    }
+
+    // ─── Body ────────────────────────────────────────
+    .datatable-body {
+      .datatable-body-row {
+        border-bottom: 1px solid $gray-100;
+        transition: background-color 0.15s ease;
+
+        .datatable-body-cell {
+          display: flex !important;
+          align-items: center !important;
+          padding: 0.25rem 0.75rem !important;
+          font-size: 0.875rem;
+          line-height: 1.4;
+          color: $gray-800;
+        }
+
+        // Hover
+        &:hover {
+          background-color: rgba($primary, 0.04);
+        }
+
+        // Selected row
+        &.active {
+          background-color: rgba($primary, 0.08) !important;
+        }
+      }
+
+      // Links in cells
+      a {
+        color: $primary;
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+          text-decoration: underline;
+          opacity: 0.8;
+        }
+      }
+
+      // Badges in cells
+      .badge {
+        font-size: 0.7rem;
+        font-weight: 500;
+        padding: 0.25em 0.55em;
+        letter-spacing: 0.02em;
+        border-radius: 0.25rem;
+      }
+
+      // Softer badge colors
+      .badge.bg-secondary { background-color: #e9ecef !important; color: #495057 !important; }
+      .badge.bg-success { background-color: #d1e7dd !important; color: #0f5132 !important; }
+      .badge.bg-danger { background-color: #f8d7da !important; color: #842029 !important; }
+      .badge.bg-warning { background-color: #fff3cd !important; color: #664d03 !important; }
+      .badge.bg-primary { background-color: #cfe2ff !important; color: #084298 !important; }
+      .badge.bg-info { background-color: #cff4fc !important; color: #055160 !important; }
+
+      // Muted text in multiline
+      small.text-muted {
+        font-size: 0.78rem;
+        line-height: 1.3;
+      }
+
+      // Row detail
+      .datatable-row-detail {
+        background: transparent;
+        padding: 0.5rem 0.75rem;
+        height: auto !important;
+        width: 98%;
+      }
+    }
+
+    // ─── Footer / Pagination ─────────────────────────
+    .datatable-footer {
+      font-size: 0.8125rem;
+
+      .page-count {
+        line-height: 2.5rem;
+        height: 2.5rem;
+        padding: 0 0.75rem;
+        color: $gray-600;
+      }
+
+      .datatable-pager {
+        a {
+          height: 1.75rem;
+          min-width: 1.75rem;
+          line-height: 1.75rem;
+          font-size: 0.8125rem;
+          border-radius: 0.25rem;
+          margin: 0 0.125rem;
+          color: $gray-600;
+
+          &:hover {
+            background-color: $gray-200;
+            color: $gray-800;
+          }
+
+          &.active {
+            background-color: $primary;
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    // ─── Summary Row ─────────────────────────────────
+    .datatable-summary-row {
+      .datatable-body-row .datatable-body-cell {
+        font-weight: 600;
+        background-color: $gray-100;
+      }
+    }
+
+    // ─── Empty State ─────────────────────────────────
+    .empty-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: $gray-400;
+      font-size: 0.875rem;
+    }
+  }
+
+  &.fixed-row {
+    .datatable-scroll {
+      .datatable-body-row {
+        border-bottom: 1px solid $gray-200;
+      }
+    }
+  }
+
+  // ─── Compact Variant ─────────────────────────────
+  &.compact {
+    font-size: 0.8125rem;
+
+    .datatable-header .datatable-header-cell {
+      padding: 0.375rem 0.625rem;
+      font-size: 0.75rem;
+    }
+
+    .datatable-body .datatable-body-row .datatable-body-cell {
+      padding: 0.375rem 0.625rem;
+      font-size: 0.8125rem;
+      line-height: 1.3;
+    }
+  }
+}
+
+// ============================================================
+// THEME: dt-light (default)
+// Minimal, clean — no background on header/footer, subtle rows
+// ============================================================
+.ngx-datatable.dt-light {
+  &.material {
+    .datatable-body .datatable-body-row {
+      // Zebra striping
+      &:nth-child(even) {
+        background-color: rgba($gray-100, 0.35);
+      }
+    }
+  }
+}
+
+// ============================================================
+// THEME: dt-bold
+// Stronger visual weight — header/footer backgrounds, borders
+// ============================================================
+.ngx-datatable.dt-bold {
+  &.material {
+    // Header with background
+    .datatable-header {
+      border-bottom: 2px solid $gray-200;
+      background-color: $gray-100;
+
+      .datatable-header-cell {
+        background-color: transparent !important;
+        color: $gray-800;
+
+        .datatable-header-cell-label {
+          color: $gray-800;
+        }
+      }
+    }
+
+    // Body with stronger row borders
+    .datatable-body .datatable-body-row {
+      border-bottom: 1px solid $gray-200;
+
+      // Zebra striping (stronger)
+      &:nth-child(even) {
+        background-color: rgba($gray-100, 0.5);
+      }
+
+      // Hover (stronger)
+      &:hover {
+        background-color: rgba($primary, 0.08);
+      }
+    }
+
+    // Footer with background
+    .datatable-footer {
+      border-top: 2px solid $gray-200;
+      background-color: $gray-100;
+    }
+  }
+}
+
+// ============================================================
+// THEME: dt-coreui
+// Mimics CoreUI <table> look — bordered, striped, light header
+// ============================================================
+.ngx-datatable.dt-coreui {
+  &.material {
+    border: 1px solid $gray-200;
+
+    // Header — CoreUI light style
+    .datatable-header {
+      border-bottom: 1px solid $gray-200;
+
+      .datatable-header-cell {
+        background-color: transparent !important;
+        color: rgba(44, 56, 74, 0.95);
+        border-right: 1px solid $gray-200;
+
+        &:last-child {
+          border-right: none;
+        }
+
+        .datatable-header-cell-label {
+          color: rgba(44, 56, 74, 0.95);
+        }
+      }
+    }
+
+    // Body — bordered cells, striped rows, hover
+    .datatable-body .datatable-body-row {
+      border-bottom: 1px solid $gray-200;
+
+      .datatable-body-cell {
+        border-right: 1px solid $gray-200;
+
+        &:last-child {
+          border-right: none;
+        }
+      }
+
+      // Zebra striping (CoreUI style)
+      &:nth-child(even) {
+        background-color: rgba(0, 0, 21, 0.05); // CoreUI --cui-table-striped-bg
+      }
+
+      // Hover (CoreUI style)
+      &:hover {
+        background-color: rgba(0, 0, 21, 0.075); // CoreUI --cui-table-hover-bg
+      }
+    }
+
+    // Footer
+    .datatable-footer {
+      border-top: 1px solid $gray-200;
+    }
+  }
+}
+
+// ─── Detail Content ────────────────────────────────
+.dt-detail-content {
+  border: 1px solid $gray-200;
+  border-radius: 0.375rem;
+
+  .highlight {
+    background-color: var(--cui-light-bg-subtle);
+  }
+}
+
+// ─── Checkbox Styling ──────────────────────────────
+.ngx-datatable .datatable-checkbox input[type="checkbox"] {
+  accent-color: $primary;
+}
