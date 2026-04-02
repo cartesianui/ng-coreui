@@ -272,6 +272,9 @@
 // Import Chart.js custom tooltips styles
 @use "@coreui/chartjs/scss/coreui-chartjs";
 
+// Flag icons (SVG assets copied via angular.json)
+@use "flag-icons";
+
 // Datatable base styles
 @use "datatable";
 

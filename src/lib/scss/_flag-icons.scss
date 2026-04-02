@@ -1,0 +1,29 @@
+// Flag icons - uses SVGs from flag-icons package copied to /flags/ via angular.json assets
+// Only the base styles + classes for countries used by the language control
+
+.fi {
+  display: inline-block;
+  width: 1.333333em;
+  height: 1em;
+  line-height: 1em;
+  background-size: contain;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+
+  &.fis {
+    width: 1em;
+  }
+}
+
+// 4x3 (rectangle) flag backgrounds
+@each $code in (
+  "us", "pk", "sa", "in", "cn", "es", "fr", "de", "pt", "ru",
+  "jp", "kr", "it", "tr", "nl", "pl", "se", "dk", "no", "fi",
+  "th", "vn", "id", "my", "bd", "ir", "il", "gr", "cz", "ro",
+  "hu", "ua", "af", "ke", "gb"
+) {
+  .fi-#{$code} {
+    background-image: url("/flags/4x3/#{$code}.svg");
+  }
+}
