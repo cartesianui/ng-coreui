@@ -4,6 +4,7 @@ import { PermissionCheckerService } from '@cartesianui/core';
 import { INavData } from '@coreui/angular';
 import { INavDataWithPermission } from '../types';
 import { NavFilterService } from '../services/nav-filter.service';
+import { resolveNavLabels } from '../utils/nav-label.util';
 
 function isOverflown(element: HTMLElement) {
   return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
@@ -26,12 +27,13 @@ export class CollapsedLayoutComponent implements AfterViewInit {
     const grantedPermissions = this.permissonService.getGrantedPermissions() as unknown as string[];
     const assignedRoles = this.permissonService.getAllAssignedRoles();
 
-    this.navItems = this.navFilterService.filterNavByPermissionsAndRoles(
+    const filtered = this.navFilterService.filterNavByPermissionsAndRoles(
       route.snapshot.data['navItems'],
       grantedPermissions,
       assignedRoles,
-      false // Set to true to enable debug logging
+      false
     );
+    this.navItems = resolveNavLabels(filtered);
   }
 
   ngAfterViewInit(): void {
