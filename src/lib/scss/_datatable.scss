@@ -349,6 +349,90 @@
 .dt-cell-img-40 { width: 40px; height: 40px; }
 .dt-cell-img-48 { width: 48px; height: 48px; }
 
+// ─── Hover Preview Overlay ─────────────────────────
+// Floating preview anchored to the right of the thumbnail.
+// CSS-only — works inside [innerHTML] with no JS.
+//
+// ngx-datatable applies `overflow: hidden` to cells and rows, which clips
+// an absolutely-positioned preview. Override on any ancestor that has a
+// hovered trigger using `:has()` (Chrome 105+, Safari 15.4+, Firefox 121+).
+.datatable-body-cell:has(.dt-cell-img-trigger:hover),
+.datatable-row-wrapper:has(.dt-cell-img-trigger:hover),
+.datatable-body:has(.dt-cell-img-trigger:hover),
+.datatable-scroll:has(.dt-cell-img-trigger:hover) {
+  overflow: visible !important;
+}
+
+// Lift the row containing the hovered trigger above adjacent rows.
+.datatable-row-wrapper:has(.dt-cell-img-trigger:hover) {
+  position: relative;
+  z-index: 5;
+}
+
+.dt-cell-img-trigger {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+
+  .dt-cell-img-preview {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 8px);
+    transform: translateY(-50%);
+    z-index: 1070;
+    padding: 8px;
+    border-radius: 0.375rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    display: none;
+    pointer-events: none;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 8px solid transparent;
+    }
+    &::before {
+      right: 100%;
+      border-right-color: #dee2e6;
+    }
+    &::after {
+      right: calc(100% - 1px);
+      border-right-color: #fff;
+    }
+
+    img {
+      object-fit: contain;
+      display: block;
+      border-radius: 0.25rem;
+    }
+  }
+
+  &:hover .dt-cell-img-preview {
+    display: block;
+    animation: dt-cell-img-preview-fade 120ms ease;
+  }
+}
+
+@keyframes dt-cell-img-preview-fade {
+  from { opacity: 0; transform: translate(-4px, -50%); }
+  to   { opacity: 1; transform: translate(0, -50%); }
+}
+
+// Preview-size variants — chosen via data-preview-size attribute on the trigger.
+// Matches the presets in <image-thumb> / <file-attachment>.
+.dt-cell-img-preview-xs       .dt-cell-img-preview img { max-width: 80px;  max-height: 100px; }
+.dt-cell-img-preview-passport .dt-cell-img-preview img { max-width: 120px; max-height: 150px; }
+.dt-cell-img-preview-avatar   .dt-cell-img-preview img { max-width: 160px; max-height: 160px; }
+.dt-cell-img-preview-small    .dt-cell-img-preview img { max-width: 200px; max-height: 200px; }
+.dt-cell-img-preview-medium   .dt-cell-img-preview img { max-width: 280px; max-height: 280px; }
+.dt-cell-img-preview-large    .dt-cell-img-preview img { max-width: 400px; max-height: 400px; }
+.dt-cell-img-preview-product  .dt-cell-img-preview img { max-width: 320px; max-height: 320px; }
+
 // ─── Group Separator ───────────────────────────────
 .dt-group-sep {
   color: #ced4da;
