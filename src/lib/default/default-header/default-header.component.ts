@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { HeaderComponent, ColorModeService } from '@coreui/angular';
-import { TokenService } from '@cartesianui/core';
+import { SessionService, TokenService } from '@cartesianui/core';
 
 @Component({
   selector: 'app-default-header',
@@ -11,7 +11,23 @@ import { TokenService } from '@cartesianui/core';
 export class DefaultHeaderComponent extends HeaderComponent {
   readonly #colorModeService = inject(ColorModeService);
   readonly #tokenService = inject(TokenService);
+  readonly #sessionService = inject(SessionService);
   readonly colorMode = this.#colorModeService.colorMode;
+
+  /** Resolved avatar URL with static fallback when no user image exists. */
+  readonly avatarSrc = computed(() => this.#sessionService.thumbnailUrl ?? './assets/img/avatars/0.png');
+
+  /** Display name for the header user button. */
+  readonly displayName = computed(() => this.#sessionService.profileName ?? this.#sessionService.user?.name ?? this.#sessionService.user?.email ?? '');
+
+  /** Email shown in the user-card header inside the dropdown. */
+  readonly displayEmail = computed(() => this.#sessionService.profileEmail ?? this.#sessionService.user?.email ?? '');
+
+  /**
+   * Tenant + domain settings only make sense to host-side or tenant-admin
+   * users. Account settings always show.
+   */
+  readonly canManageWorkspace = computed(() => this.#sessionService.isHostAdmin || this.#sessionService.isTenantAdmin);
 
   readonly colorModes = [
     { name: 'light', text: 'Light', icon: 'cilSun' },

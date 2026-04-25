@@ -1,0 +1,144 @@
+// Modernized user dropdown menu.
+:host ::ng-deep .user-menu.dropdown-menu {
+  min-width: 280px;
+  padding: 0;
+  margin-top: 8px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  background-color: var(--bs-body-bg, #fff);
+
+  // ─── User identity card at the top ─────────────
+  .user-menu-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.06), rgba(13, 110, 253, 0.0));
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+
+    > c-avatar,
+    > .avatar {
+      flex-shrink: 0;
+    }
+  }
+
+  .user-menu-card-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-menu-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--bs-body-color, #212529);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-menu-email {
+    font-size: 0.8rem;
+    color: var(--bs-secondary, #6c757d);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // ─── Section title (replaces bg-light header strip) ───
+  .user-menu-section {
+    padding: 12px 16px 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bs-secondary, #6c757d);
+  }
+
+  // ─── Items ─────────────────────────────────────
+  .user-menu-item.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    color: var(--bs-body-color, #212529);
+    font-weight: 500;
+    background-color: transparent;
+    border-radius: 0;
+    transition: background-color 120ms ease, color 120ms ease;
+
+    > svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--bs-secondary, #6c757d);
+      transition: color 120ms ease;
+    }
+
+    > span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &:hover,
+    &:focus {
+      background-color: var(--bs-tertiary-bg, #f1f3f5);
+      color: var(--bs-body-color, #212529);
+
+      > svg {
+        color: var(--bs-primary, #0d6efd);
+      }
+    }
+
+    &.active,
+    &:active {
+      background-color: rgba(13, 110, 253, 0.1);
+      color: var(--bs-primary, #0d6efd);
+
+      > svg {
+        color: var(--bs-primary, #0d6efd);
+      }
+    }
+  }
+
+  // Destructive (logout) variant — quiet by default, red on hover.
+  .user-menu-item.user-menu-item-danger.dropdown-item {
+    cursor: pointer;
+    color: var(--bs-body-color, #212529);
+
+    > svg {
+      color: var(--bs-secondary, #6c757d);
+    }
+
+    &:hover,
+    &:focus {
+      background-color: rgba(220, 53, 69, 0.08);
+      color: var(--bs-danger, #dc3545);
+
+      > svg {
+        color: var(--bs-danger, #dc3545);
+      }
+    }
+  }
+
+  // ─── Divider ───────────────────────────────────
+  hr.dropdown-divider {
+    margin: 6px 0;
+    border-color: var(--bs-border-color, #dee2e6);
+    opacity: 1;
+  }
+}
+
+// Header user button — subtle hover, rounded for a softer feel.
+:host ::ng-deep button[cDropdownToggle] {
+  border: none;
+  background: transparent;
+  border-radius: 0.5rem;
+  transition: background-color 120ms ease;
+
+  &:hover,
+  &:focus {
+    background-color: var(--bs-tertiary-bg, #f1f3f5);
+  }
+}
