@@ -1,8 +1,611 @@
 @use "@coreui/coreui/scss/mixins/transition" as *;
 @use "@coreui/coreui/scss/mixins/color-mode" as *;
+@use "variables" as *;
 
 body {
   background-color: var(--cui-tertiary-bg);
+}
+
+// ============================================================
+// CARD HEADER TYPOGRAPHY
+// Card chrome (radius / box-shadow / border / cap-bg / cap-padding) is
+// driven by SCSS variables in styles.scss `with(...)`. This rule covers
+// the section-label typography used inside <strong> elements in card
+// headers — there is no canonical SCSS variable for this.
+// ============================================================
+.card-header strong {
+  font-size: 0.8125rem;          // 13px
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cui-secondary-color);
+}
+
+// ============================================================
+// FORM GROUP / TEXTAREA DEFAULTS
+// BS5 dropped .form-group; we re-introduce the wrapper rhythm here.
+// Textarea min-height and resize behaviour have no SCSS variable.
+// Input radius / padding / focus colours / form labels are driven
+// via @coreui SCSS vars in styles.scss — see $input-* and $form-label-*.
+// ============================================================
+.form-group {
+  margin-bottom: 1rem;
+}
+
+textarea.form-control {
+  min-height: 6rem;          // 96px
+  resize: vertical;
+}
+
+// ============================================================
+// VALIDATION STATES
+// Tinted bg + tinted border for is-invalid / is-valid.
+// Bootstrap doesn't expose SCSS variables for the bg-tint specifically,
+// only for the strong feedback colour ($form-feedback-{valid,invalid}-color
+// in styles.scss `with(...)`).
+// ============================================================
+.is-invalid {
+  background-color: rgba($danger, 0.067);
+  border: 1px solid $cartesian-invalid-border;
+  transition: background-color 0.2s, border 0.2s;
+
+  &:focus {
+    background-color: rgba($danger, 0.067);
+    border: 1px solid $cartesian-invalid-border;
+    box-shadow: 0 0 0 0.2rem rgba($danger, 0.067);
+  }
+}
+
+.is-valid {
+  background-color: rgba($success, 0.067);
+  border: 1px solid $cartesian-valid-border;
+  transition: background-color 0.2s, border 0.2s;
+
+  &:focus {
+    background-color: rgba($success, 0.067);
+    border: 1px solid $cartesian-valid-border;
+    box-shadow: 0 0 0 0.2rem rgba($success, 0.067);
+  }
+}
+
+// Always render the BS validation feedback element
+.invalid-feedback {
+  display: block;
+}
+
+// ============================================================
+// DOC-FORM — bounded flex column for create/edit forms with a
+// long inner items table.
+//
+// Use case: forms rendered inside an off-canvas (or any bounded
+// surface) where the line-items table can grow tall but a totals/
+// summary block must remain visible below — never overlapped by
+// scrolled items.
+//
+// Wiring (component-side):
+//   1. Component decorator: `host: { class: 'bounded-form' }`
+//   2. Right card uses `.doc-form-card` + `.doc-form-card-body`.
+//   3. Items area is wrapped in `.line-items-area`.
+//   4. Totals/summary block is `.doc-totals` (or `.balance-strip`
+//      for DR/CR vouchers), sibling of `.line-items-area`.
+//
+// Why every ancestor needs `min-height: 0`: flex items default to
+// `min-height: auto` (= shrink-to-fit-content), which prevents the
+// inner overflow:auto from kicking in. Setting `min-height: 0` at
+// every level lets the bounded height propagate to the items area,
+// which becomes the actual scroll container.
+// ============================================================
+.bounded-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+
+  .main-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content > form {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content > form > .row,
+  .main-content > .row {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  // Both columns participate in the flex chain so child cards can
+  // be height-constrained. The narrower (left) column scrolls
+  // naturally if its content overflows; the wider (right) column
+  // hosts the bounded items + totals.
+  > .main-content .col-md-4,
+  > .main-content .col-md-8 {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  > .main-content .col-md-4 {
+    overflow-y: auto;
+  }
+
+  > .main-content .col-md-4 > .card,
+  .doc-form-card {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Right card body — the bounded flex container for items + totals.
+  .doc-form-card-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;          // .doc-totals carries its own bottom padding
+  }
+}
+
+// Items area — internally scrolling, takes all remaining space.
+.line-items-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+// ============================================================
+// LINE-ITEMS — column-header + ghost-trash pattern for forms
+// using <repeatable-form> with line items.
+//
+// Header mirrors the per-row DOM emitted by <repeatable-form>:
+//   <div class="row"><div class="col">{template}</div><div class="col-auto">{trash}</div></div>
+// A hidden ghost trash button in the header reserves the same
+// trailing column width so columns align — no magic widths.
+// ============================================================
+.line-items {
+  width: 100%;
+}
+
+.line-items__header {
+  margin: 0;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--cui-border-color);
+  font-size: 0.75rem;          // 12px
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cui-secondary-color);
+}
+
+.line-items__header-ghost {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+// ============================================================
+// LINE-ITEM-ROW — per-row item form. Apply .line-item-row to
+// the item form's :host (via `host: { class: 'line-item-row' }`)
+// to opt in to label-hiding and right-aligned numeric columns.
+//
+// Labels stay in DOM (visually hidden) for §8.3 + a11y.
+// ============================================================
+.line-item-row {
+  display: block;
+  width: 100%;
+
+  label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  // Numeric columns right-aligned, tabular nums (works for both
+  // SO/PO/RN/DN/RTN with col-md-2 quantity/price/total layout
+  // and voucher with col-md-2 amount layout).
+  .col-md-2 .form-control {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Tighten the row vertically.
+  .row {
+    align-items: center;
+  }
+}
+
+// ============================================================
+// DOC-TOTALS — compact strip with inline editable inputs on the
+// left and a stacked Sub Total + emphasised Grand Total card on
+// the right. ~80px tall. Wraps on narrow viewports.
+//
+// Sibling of .line-items-area inside .doc-form-card-body.
+// flex: 0 0 auto = sized by content, never overlapped by items.
+// ============================================================
+.doc-totals {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 0 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--cui-border-color);
+  background: var(--cui-white);
+}
+
+// Left zone — inline label + input pairs.
+.doc-totals__inputs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.doc-totals__field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.doc-totals__field-label {
+  margin: 0 !important;
+  font-size: 0.75rem;                  // 12px
+  color: var(--cui-secondary-color);
+  flex-shrink: 0;
+}
+
+.doc-totals__field-input {
+  width: 6rem;                         // 96px
+  height: 2rem !important;             // 32px
+  padding: 0 0.5rem !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  background: var(--cui-white) !important;
+  border-color: var(--cui-border-color) !important;
+}
+
+// Right zone — totals readout (highlighted card).
+// Soft indigo tint draws the eye; Grand Total value renders in
+// primary indigo on top of the tint for added prominence.
+.doc-totals__readout {
+  min-width: 12.5rem;                  // 200px
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-left: auto;
+  padding: 0.625rem 1rem;              // 10px 16px
+  background: rgba(var(--cui-primary-rgb), 0.05);
+  border: 1px solid rgba(var(--cui-primary-rgb), 0.18);
+  border-radius: 0.5rem;               // 8px
+}
+
+.doc-totals__sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.doc-totals__sub-label {
+  font-size: 0.75rem;                  // 12px
+  color: var(--cui-secondary-color);
+}
+
+.doc-totals__sub-value {
+  width: auto !important;
+  max-width: 6rem;
+  height: 1.25rem !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem !important;       // 12px
+  font-weight: 500;
+  color: var(--cui-body-color) !important;
+}
+.doc-totals__sub-value:focus {
+  box-shadow: none !important;
+  outline: none;
+}
+
+.doc-totals__divider {
+  border-top: 1px solid var(--cui-border-color);
+  margin: 0.25rem 0;
+}
+
+.doc-totals__grand {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.doc-totals__grand-label {
+  font-size: 0.6875rem;                // 11px
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cui-secondary-color);
+}
+
+.doc-totals__grand-value {
+  width: auto !important;
+  max-width: 9rem;
+  height: 1.75rem !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.375rem !important;      // 22px
+  font-weight: 700;
+  color: var(--cui-primary) !important;
+  line-height: 1.2;
+}
+.doc-totals__grand-value:focus {
+  box-shadow: none !important;
+  outline: none;
+}
+
+// ============================================================
+// BALANCE-STRIP — voucher / journal-line variant of doc-totals.
+// Used when the document is DR/CR rather than items + totals.
+// Shows DR total / CR total / Balance with prominent diff.
+//
+// Same flex: 0 0 auto sibling-block placement as .doc-totals.
+// ============================================================
+.balance-strip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 0 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--cui-border-color);
+  background: var(--cui-white);
+}
+
+.balance-strip__cell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.balance-strip__cell-label {
+  font-size: 0.75rem;
+  color: var(--cui-secondary-color);
+}
+
+.balance-strip__cell-value {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cui-body-color);
+
+  &--dr { color: var(--cui-info); }
+  &--cr { color: var(--cui-warning); }
+  &--balanced { color: var(--cui-success); }
+  &--unbalanced { color: var(--cui-danger); }
+}
+
+// ============================================================
+// DATATABLE ROW-DETAIL — summary card + notes block
+// Used by PO / SO / DN / RN / RTN listings (and any other listing that
+// shows an at-a-glance card in its row-detail expansion).
+// The detail row itself (.datatable-row-detail) is tinted globally —
+// see _datatable.scss. These classes provide the lifted-on-white
+// card + notes block that sit inside that tinted zone.
+// ============================================================
+
+// Lifted at-a-glance card (e.g. SO/PO summary).
+.summary-card {
+  background: var(--cui-white);
+  border: 1px solid var(--cui-border-color);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.summary-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.summary-card__doc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--cui-body-color);
+
+  i {
+    color: var(--cui-secondary-color);
+    font-size: 0.875rem;
+  }
+}
+
+.summary-card__date {
+  font-size: 0.75rem;
+  color: var(--cui-secondary-color);
+}
+
+.summary-card__divider {
+  border-top: 1px solid var(--cui-border-color);
+  margin: 0.125rem 0;
+}
+
+.summary-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  line-height: 1.4;
+}
+
+.summary-card__label {
+  color: var(--cui-secondary-color);
+}
+
+.summary-card__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--cui-body-color);
+}
+
+.summary-card__value--add {
+  color: var(--cui-success);
+}
+
+.summary-card__value--sub {
+  color: var(--cui-danger);
+}
+
+.summary-card__row--grand {
+  .summary-card__label {
+    font-weight: 600;
+    color: var(--cui-body-color);
+  }
+  .summary-card__value {
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+}
+
+.summary-card__status {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+// Quiet notes / reason block — placed under nested items table.
+// Lifts on --cui-white so it stands out from the tinted row-detail bg.
+// Variant `.dt-detail-notes--warn` for warning / reason fields.
+.dt-detail-notes {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--cui-white);
+  border: 1px solid var(--cui-border-color);
+  border-left: 3px solid var(--cui-secondary-color);
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  &--warn {
+    border-left-color: var(--cui-warning);
+  }
+}
+
+.dt-detail-notes__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;          // 11px
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cui-secondary-color);
+
+  i {
+    font-size: 0.6875rem;
+    opacity: 0.7;
+  }
+}
+
+.dt-detail-notes__body {
+  margin: 0;
+  font-size: 0.8125rem;          // 13px
+  line-height: 1.45;
+  color: var(--cui-body-color);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+// ============================================================
+// COMMON UTILITIES
+// Small cross-app helpers. Used in feature libs (catalog, sales,
+// procurement) and platform widgets — must be globally available.
+// ============================================================
+.cursor-pointer {
+  cursor: pointer;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.btn-primary,
+.btn-success,
+.btn-danger,
+.btn-default,
+.btn-info,
+.btn-dark {
+  color: $white;
+}
+
+.freeze-ui {
+  opacity: 0.3;
+}
+
+.diagonal-text {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.ucase {
+  text-transform: uppercase;
+}
+
+.offcanvas-body {
+  .main-content {
+    height: 80vh;
+  }
+}
+
+.sticky-actions {
+  position: sticky;
+  top: 0;
+  z-index: 50;        // above cards
+  background: $white;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid $gray-300;
 }
 
 .wrapper {

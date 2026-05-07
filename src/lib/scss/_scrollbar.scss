@@ -1,31 +1,26 @@
-// scrollbar tinkering
+@use 'variables' as *;
+
+// Scrollbar tinkering — palette-sourced greys.
 
 @supports (scrollbar-width: thin) {
   * {
     scrollbar-width: thin;
-    // scrollbar-color: #444 transparent;
-    scrollbar-color: #c9c9c9 transparent;
+    scrollbar-color: $gray-400 transparent;
   }
 }
 
-//::-webkit-scrollbar {
-//  width: .7em;
-//  height: .7em;
-//}
-
 ::-webkit-scrollbar-track {
-  background: var(--cui-body-bg, #fff);
+  background: var(--cui-body-bg);
   border-radius: 100vw;
   margin-block: .2em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #999;
-  border: .15em solid var(--cui-body-bg, #fff);
+  background: $gray-500;
+  border: .15em solid var(--cui-body-bg);
   border-radius: 100vw;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b6b6b6;
+  background: $gray-400;
 }
-

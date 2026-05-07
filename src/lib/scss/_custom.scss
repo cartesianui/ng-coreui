@@ -18,7 +18,7 @@
 
 // custom readonly input styling
 .form-control[readonly] {
-  background-color: #e9ecef;
+  background-color: var(--cui-gray-200);
   opacity: 1;
   cursor: not-allowed;
 }

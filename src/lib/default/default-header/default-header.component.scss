@@ -4,10 +4,10 @@
   padding: 0;
   margin-top: 8px;
   border-radius: 0.75rem;
-  border: 1px solid var(--bs-border-color, #dee2e6);
+  border: 1px solid var(--cui-border-color);
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
   overflow: hidden;
-  background-color: var(--bs-body-bg, #fff);
+  background-color: var(--cui-body-bg);
 
   // ─── User identity card at the top ─────────────
   .user-menu-card {
@@ -15,8 +15,8 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: linear-gradient(135deg, rgba(13, 110, 253, 0.06), rgba(13, 110, 253, 0.0));
-    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    background: linear-gradient(135deg, rgba(var(--cui-primary-rgb), 0.06), rgba(var(--cui-primary-rgb), 0));
+    border-bottom: 1px solid var(--cui-border-color);
 
     > c-avatar,
     > .avatar {
@@ -32,7 +32,7 @@
   .user-menu-name {
     font-weight: 600;
     font-size: 0.95rem;
-    color: var(--bs-body-color, #212529);
+    color: var(--cui-body-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -40,7 +40,7 @@
 
   .user-menu-email {
     font-size: 0.8rem;
-    color: var(--bs-secondary, #6c757d);
+    color: var(--cui-secondary-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -53,7 +53,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--bs-secondary, #6c757d);
+    color: var(--cui-secondary-color);
   }
 
   // ─── Items ─────────────────────────────────────
@@ -62,7 +62,7 @@
     align-items: center;
     gap: 12px;
     padding: 10px 16px;
-    color: var(--bs-body-color, #212529);
+    color: var(--cui-body-color);
     font-weight: 500;
     background-color: transparent;
     border-radius: 0;
@@ -72,7 +72,7 @@
       width: 18px;
       height: 18px;
       flex-shrink: 0;
-      color: var(--bs-secondary, #6c757d);
+      color: var(--cui-secondary-color);
       transition: color 120ms ease;
     }
 
@@ -83,21 +83,21 @@
 
     &:hover,
     &:focus {
-      background-color: var(--bs-tertiary-bg, #f1f3f5);
-      color: var(--bs-body-color, #212529);
+      background-color: var(--cui-tertiary-bg);
+      color: var(--cui-body-color);
 
       > svg {
-        color: var(--bs-primary, #0d6efd);
+        color: var(--cui-primary);
       }
     }
 
     &.active,
     &:active {
-      background-color: rgba(13, 110, 253, 0.1);
-      color: var(--bs-primary, #0d6efd);
+      background-color: rgba(var(--cui-primary-rgb), 0.1);
+      color: var(--cui-primary);
 
       > svg {
-        color: var(--bs-primary, #0d6efd);
+        color: var(--cui-primary);
       }
     }
   }
@@ -105,19 +105,19 @@
   // Destructive (logout) variant — quiet by default, red on hover.
   .user-menu-item.user-menu-item-danger.dropdown-item {
     cursor: pointer;
-    color: var(--bs-body-color, #212529);
+    color: var(--cui-body-color);
 
     > svg {
-      color: var(--bs-secondary, #6c757d);
+      color: var(--cui-secondary-color);
     }
 
     &:hover,
     &:focus {
-      background-color: rgba(220, 53, 69, 0.08);
-      color: var(--bs-danger, #dc3545);
+      background-color: rgba(var(--cui-danger-rgb), 0.08);
+      color: var(--cui-danger);
 
       > svg {
-        color: var(--bs-danger, #dc3545);
+        color: var(--cui-danger);
       }
     }
   }
@@ -125,7 +125,7 @@
   // ─── Divider ───────────────────────────────────
   hr.dropdown-divider {
     margin: 6px 0;
-    border-color: var(--bs-border-color, #dee2e6);
+    border-color: var(--cui-border-color);
     opacity: 1;
   }
 }
@@ -139,6 +139,6 @@
 
   &:hover,
   &:focus {
-    background-color: var(--bs-tertiary-bg, #f1f3f5);
+    background-color: var(--cui-tertiary-bg);
   }
 }
