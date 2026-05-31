@@ -22,3 +22,14 @@
   opacity: 1;
   cursor: not-allowed;
 }
+
+// AppDialogService.confirm() lifts the modal's chrome out of Bootstrap's
+// default .modal-header / .modal-body / .modal-footer into a self-contained
+// `.app-dialog` shell that owns its own padding + tone. Zero the
+// .modal-content padding only for *our* shell — every other ngx-bootstrap
+// modal in the app keeps default Bootstrap chrome.
+.modal-dialog.app-dialog-host .modal-content {
+  padding: 0;
+  border-radius: var(--cui-card-border-radius);
+  overflow: hidden;
+}

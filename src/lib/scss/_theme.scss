@@ -129,10 +129,16 @@ textarea.form-control {
   // be height-constrained. The narrower (left) column scrolls
   // naturally if its content overflows; the wider (right) column
   // hosts the bounded items + totals.
+  // `min-width: 0` mirrors the `min-height: 0` rule: without it,
+  // flex items default to content-based min sizing and a wide
+  // child (e.g. a `<textarea>` with default cols) can push the
+  // column past its intended width, blowing out the row and
+  // visually clipping the right column.
   > .main-content .col-md-4,
   > .main-content .col-md-8 {
     height: 100%;
     min-height: 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
   }
@@ -141,7 +147,57 @@ textarea.form-control {
     overflow-y: auto;
   }
 
-  > .main-content .col-md-4 > .card,
+  // Textareas default to a `cols`-based intrinsic width (~20ch).
+  // Inside our flex chain where every parent is `min-width: 0`,
+  // there is no resolved parent width for `width: 100%` to land
+  // on, so the textarea falls back to its intrinsic width and
+  // overflows the card. Pinning `width: 100%` + `box-sizing` +
+  // `display: block` makes the textarea cooperate with the
+  // bounded layout. Same anchor on `<input>` to be safe.
+  > .main-content textarea.form-control,
+  > .main-content input.form-control {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  // `<with-validation>` wraps a form control + error block. Default
+  // inline display gives it no width, which collapses `width: 100%`
+  // on the child input. Make it block so children inherit width.
+  > .main-content with-validation {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  // Reassert Bootstrap's `.row` flex container inside the tab chain.
+  // Component-encapsulated styles or downstream overrides can win
+  // over Bootstrap's base, leaving `.row` at the default `display: block`
+  // → columns stack vertically full-width and the right card scrolls
+  // off-screen. Pinning here keeps the columns side-by-side.
+  > .main-content > tabset > .tab-content > tab.tab-pane.active > form > .row {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  // Left details card — flex-column without `min-height: 0`. Keeping
+  // `min-height: 0` here shrinks the card to its content height, at
+  // which point a wide textarea's intrinsic `cols` width wins over
+  // `width: 100%` and overflows the card's right padding. The left
+  // column already scrolls vertically (`overflow-y: auto`) so a
+  // non-shrunk card is fine.
+  > .main-content .col-md-4 > .card {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Right items card — MUST have `min-height: 0` so its child
+  // `.doc-form-card-body` (and the `.line-items-area` inside it)
+  // can shrink and become the bounded scroll container. Without it
+  // the line-items area grows to fit all rows and the right column
+  // has no internal scroll.
   .doc-form-card {
     flex: 1 1 auto;
     min-height: 0;
@@ -158,14 +214,75 @@ textarea.form-control {
     flex-direction: column;
     padding-bottom: 0;          // .doc-totals carries its own bottom padding
   }
+
+  // When the form is wrapped in <tabset>...<tab heading="Details"><form>...,
+  // ngx-bootstrap injects layers between .main-content and the form:
+  //   <tabset>  (host gets .tab-container, contains <ul.nav> + <div.tab-content>)
+  //     <ul class="nav nav-tabs">…</ul>
+  //     <div class="tab-content">
+  //       <tab class="tab-pane active">  (only the active one is in flow)
+  //         <form>…</form>
+  // The original chain expected `.main-content > form`; here we re-propagate
+  // the flex-column + `min-height: 0` chain through tabset/tab-content/tab
+  // so the inner scroll anchor still works.
+  .main-content > tabset {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .main-content > tabset > ul.nav {
+    flex: 0 0 auto;
+  }
+  .main-content > tabset > .tab-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .main-content > tabset > .tab-content > tab.tab-pane.active {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .main-content > tabset > .tab-content > tab.tab-pane.active > form {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  // Same row-stretch rule the non-tab branch already has, but anchored
+  // off the tab-pane so the inner .row inherits the bounded height.
+  .main-content > tabset > .tab-content > tab.tab-pane.active > form > .row {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+  // History tab body — let the audit-history block scroll internally
+  // so the tabs strip stays pinned to the top.
+  .main-content > tabset > .tab-content > tab.tab-pane.active > audit-history {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: block;
+    padding: 0.5rem 0.25rem;
+  }
 }
 
 // Items area — internally scrolling, takes all remaining space.
+// `scrollbar-gutter: stable` reserves space for the thumb so the
+// content doesn't shift when the bar appears/disappears, and keeps
+// the bar visually adjacent to the content edge instead of getting
+// painted over by an `overflow: hidden` ancestor.
 .line-items-area {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
 }
 
 // ============================================================
@@ -208,7 +325,12 @@ textarea.form-control {
   display: block;
   width: 100%;
 
-  label {
+  // Hide only field-level labels explicitly marked `.visually-hidden`
+  // (a11y placeholders for the column inputs). Do NOT target every
+  // <label> descendant — choosable-control wraps each radio + its text
+  // in a <label> to make the row clickable; clipping those to 1px
+  // hides the picker entirely. See workstream notes 2026-05-29.
+  label.visually-hidden {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;

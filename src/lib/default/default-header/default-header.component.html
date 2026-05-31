@@ -78,9 +78,15 @@
       <li class="user-menu-section">Settings</li>
 
       <li>
-        <a routerLink="/admin/settings/user" cDropdownItem class="user-menu-item">
+        <a routerLink="/admin/settings/profile" cDropdownItem class="user-menu-item">
           <svg cIcon name="cilUser"></svg>
-          <span>Account Settings</span>
+          <span>Profile</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/settings/profile" cDropdownItem class="user-menu-item">
+          <svg cIcon name="cilUser"></svg>
+          <span>User Settings</span>
         </a>
       </li>
       @if (canManageWorkspace()) {
