@@ -40,6 +40,9 @@
   <!--app-body-->
   <div class="body flex-grow-1 px-3">
     <c-container breakpoint="lg" class="h-auto">
+      <!-- system-notification area — standalone component owns its
+           own fetch + render; this is the only integration surface. -->
+      <system-notifications-banner></system-notifications-banner>
       <router-outlet></router-outlet>
     </c-container>
   </div>

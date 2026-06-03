@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 ;
 
 import { CommonModule as CartesianCommonModule } from '@cartesianui/common';
+import { SystemNotificationsBannerComponent } from '@cartesianui/system-notification';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
@@ -162,7 +163,11 @@ const APP_CONTAINERS = [
     ButtonCloseDirective,
 
     BreadcrumbComponent,
-    BreadcrumbItemComponent
+    BreadcrumbItemComponent,
+
+    // System-notification banner (standalone) — owns its own HTTP fetch
+    // + render. Slotted into the default layout's notification area.
+    SystemNotificationsBannerComponent
   ],
   declarations: [...APP_CONTAINERS],
   providers: [

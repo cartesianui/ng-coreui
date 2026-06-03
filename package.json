@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": "^16.2.2",
-    "@angular/core": "^16.2.2"
+    "@angular/core": "^16.2.2",
+    "@cartesianui/system-notification": "^0.1.0"
   },
   "dependencies": {
     "@coreui/angular": "^5.5.15",
