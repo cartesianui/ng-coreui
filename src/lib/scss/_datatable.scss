@@ -1,4 +1,5 @@
 @use 'variables' as *;
+@use 'sass:map';
 
 // ============================================================
 // DATATABLE - Clean, modern table design
@@ -443,4 +444,210 @@
   font-size: 0.75em;
   margin: 0 3px;
   vertical-align: middle;
+}
+
+// ─── Tooltip (reusable formatter affordance) ───────
+// Output by `wrapWithTooltip` in @cartesianui/common/formatter.utils.
+// Styled popup with arrow + optional header label, revealed on hover OR
+// click (focus-visible on the trigger). Mirrors the image-preview
+// :has() overflow-escape above so the bubble can leave the cell bounds.
+.dt-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+.dt-tip-content {
+  display: inline-block;
+}
+// Per-theme accent — sourced from Bootstrap's semantic palette so
+// alerts / buttons / badges / tooltips all share one definition. A
+// brand-level color tweak in `_variables.scss` propagates everywhere.
+$dt-tip-themes: (
+  info:    (bg: $info,    text: #fff),
+  success: (bg: $success, text: #fff),
+  warning: (bg: $warning, text: #1f2937),  // dark text — warning bg is light for AA contrast
+  danger:  (bg: $danger,  text: #fff),
+);
+
+// Theme colors are applied with maximum specificity directly on every
+// element that could be the icon (button + every shape Font Awesome
+// renders into). Avoids dependency on `var()` cascade + CSS variable
+// inheritance which appeared unreliable in this project's CSS pipeline.
+@each $name, $tokens in $dt-tip-themes {
+  $bg: map.get($tokens, bg);
+  $txt: map.get($tokens, text);
+
+  // Expose vars too — bubble + arrow still use them (and they're
+  // useful for callers who want to override at a parent scope).
+  .dt-tip--#{$name} {
+    --dt-tip-bg: #{$bg};
+    --dt-tip-text: #{$txt};
+  }
+
+  // Explicit icon color on every concrete element. Wins by
+  // hardcoding the resolved Sass value at compile time, plus !important
+  // to beat the ngx-datatable cell-level color rule (specificity 0,4,0).
+  // Covers ALL variants the renderer may emit:
+  //   1. <button.dt-tip-trigger><i.fa>   ← current source
+  //   2. <i.dt-tip-icon.fa>              ← previous iteration
+  //   3. <i.fa>                          ← bare icon (stale bundles)
+  //   4. <svg>                           ← FA SVG-with-JS mode
+  .dt-tip--#{$name} .dt-tip-trigger,
+  .dt-tip--#{$name} .dt-tip-trigger i,
+  .dt-tip--#{$name} .dt-tip-trigger svg,
+  .dt-tip--#{$name} .dt-tip-trigger svg *,
+  .dt-tip--#{$name} > i,
+  .dt-tip--#{$name} > i.fa,
+  .dt-tip--#{$name} > .fa,
+  .dt-tip--#{$name} > svg,
+  .dt-tip--#{$name} > svg * {
+    color: #{$bg} !important;
+    fill:  #{$bg} !important;
+  }
+}
+
+// Specificity battle: ngx-datatable at line ~61 has
+// `.ngx-datatable.material .datatable-body .datatable-body-row
+// .datatable-body-cell { color: $gray-800; }` — specificity (0,4,0).
+// Plain `.dt-tip .dt-tip-trigger` (0,2,0) loses on cascade.
+//
+// Bump specificity by prefixing with `.datatable-body-cell` so the
+// button-color rule reaches (0,3,0), AND mark with `!important` to
+// guarantee the icon glyph beats any FA / framework reset that may
+// also be sneaking in. Matches the file's existing `!important`
+// pattern for cell-overflow escapes (see image-trigger / dt-tip
+// overflow blocks).
+.datatable-body-cell .dt-tip .dt-tip-trigger,
+.dt-tip .dt-tip-trigger {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  font-size: 0.9em;
+  cursor: pointer;
+  align-self: center;
+  color: var(--dt-tip-bg, #{$info}) !important;
+  transition: color 0.12s ease, transform 0.12s ease;
+
+  // Explicitly re-color every shape the FA glyph can be: webfont <i>
+  // (color-inherit) and inline-SVG <svg>+<path> (FA6 SVG-with-JS mode,
+  // which renders SVG paths that ignore parent `color`).
+  i, svg, svg * {
+    color: inherit !important;
+    fill:  currentColor !important;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: scale(1.15);
+    outline: none;
+    filter: brightness(0.88);
+  }
+}
+
+.dt-tip-bubble {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1080;          // above ngx-datatable rows; under modals (1055)
+  min-width: 220px;
+  max-width: 420px;
+  padding: 0.55rem 0.75rem;
+  background: var(--dt-tip-bg);
+  color: var(--dt-tip-text);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25),
+              0 2px 6px  rgba(15, 23, 42, 0.18);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.14s ease, visibility 0.14s ease, transform 0.14s ease;
+
+  // Speech-bubble arrow pointing up at the trigger.
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 14px;
+    width: 0;
+    height: 0;
+    border-left:  6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid var(--dt-tip-bg);
+  }
+}
+.dt-tip-bubble-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dt-tip-text);
+  opacity: 0.7;
+}
+.dt-tip-bubble-value {
+  display: block;
+  font-weight: 500;
+}
+
+// Reveal: hover anywhere on the wrap, or focus the trigger (click +
+// keyboard). `:has()` lifts the bubble even when the icon itself is
+// blurred so click-to-open feels stable across browsers.
+.dt-tip:hover .dt-tip-bubble,
+.dt-tip:has(.dt-tip-trigger:focus-visible) .dt-tip-bubble {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Escape clipping from EVERY ancestor that may default to overflow:hidden.
+// ngx-datatable produces this nested structure:
+//   ngx-datatable.dt-light.material.fixed-header.fixed-row.virtualized
+//     .datatable-body
+//       .datatable-scroll
+//         .datatable-row-wrapper
+//           .datatable-body-row
+//             .datatable-body-cell
+//               .datatable-body-cell-label
+//                 <span [innerHTML]>   ← our .dt-tip lives here
+// And outside the table: .card-body, .card, .main-content, .dt (the
+// listing wrapper div). Without lifting overflow on EVERY one, the
+// bubble paints into the DOM but is clipped at the first hidden ancestor.
+$dt-tip-clip-parents:
+  '.datatable-body-cell-label',
+  '.datatable-body-cell',
+  '.datatable-body-row',
+  '.datatable-row-wrapper',
+  '.datatable-scroll',
+  '.datatable-body',
+  '.ngx-datatable',
+  '.dt',
+  '.card-body',
+  '.card',
+  '.main-content';
+
+@each $parent in $dt-tip-clip-parents {
+  #{$parent}:has(.dt-tip:hover),
+  #{$parent}:has(.dt-tip-trigger:focus-visible) {
+    overflow: visible !important;
+  }
+}
+
+// Lift the hovered/focused row + its containing card above neighbours
+// so the bubble paints on top of adjacent content during the reveal.
+.datatable-row-wrapper:has(.dt-tip:hover),
+.datatable-row-wrapper:has(.dt-tip-trigger:focus-visible),
+.card:has(.dt-tip:hover),
+.card:has(.dt-tip-trigger:focus-visible) {
+  position: relative;
+  z-index: 6;
 }
