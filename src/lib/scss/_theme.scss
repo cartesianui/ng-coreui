@@ -3,7 +3,191 @@
 @use "variables" as *;
 
 body {
-  background-color: var(--cui-tertiary-bg);
+  // Page canvas (mockup) — --cui-body-bg is bridged to --ct-canvas in _tokens.
+  background-color: var(--cui-body-bg);
+}
+
+// Surface utilities adapt to the theme. `bg-white` / `bg-light` are used all
+// over (POS cart/drawer/products, modals, panels) as "surface" intent — point
+// them at surface tokens so they work in dark too (unchanged-looking in light:
+// surface = white, surface-2 ≈ subtle off-white). `.btn-light` is a separate
+// button variant and is intentionally NOT affected.
+.bg-white:not(.btn) { background-color: var(--ct-surface) !important; }
+.bg-light:not(.btn) { background-color: var(--ct-surface-2) !important; }
+// A `.bg-light` badge is a neutral surface chip — its paired `.text-dark`
+// would be invisible on the dark surface, so use adaptive body text.
+.badge.bg-light { color: var(--ct-text) !important; }
+
+// Wizard stepper panel — themed surface (the `bg-white` utility was removed
+// from the markup so it adapts to dark; `border`/`rounded` still apply).
+.wizard-stepper {
+  background-color: var(--ct-surface);
+}
+
+// ============================================================
+// DROPDOWN / TYPEAHEAD OPTION LISTS — theme the surface + hover/active so
+// they align with light + dark (CoreUI c-dropdown, plain .dropdown-menu, and
+// ngx-bootstrap <typeahead-container> used by selectable-control). Without
+// this the option hover stays a default light grey in dark mode.
+// ============================================================
+.dropdown-menu,
+typeahead-container {
+  --cui-dropdown-bg:               var(--ct-surface);
+  --cui-dropdown-color:            var(--ct-text);
+  --cui-dropdown-border-color:     var(--ct-border);
+  --cui-dropdown-link-color:       var(--ct-text);
+  --cui-dropdown-link-hover-bg:    var(--ct-surface-3);
+  --cui-dropdown-link-hover-color: var(--ct-text);
+  --cui-dropdown-link-active-bg:   var(--ct-primary);
+  --cui-dropdown-link-active-color: var(--ct-on-primary);
+}
+
+// ngx-bootstrap typeahead renders its own `.dropdown-item`s and styles hover
+// directly (not via the CoreUI vars), so theme them explicitly.
+typeahead-container {
+  background-color: var(--ct-surface);
+  border-color: var(--ct-border);
+
+  .dropdown-item {
+    color: var(--ct-text);
+
+    &:hover,
+    &:focus {
+      background-color: var(--ct-surface-3);
+      color: var(--ct-text);
+    }
+    &.active,
+    &:active {
+      background-color: var(--ct-primary);
+      color: var(--ct-on-primary);
+    }
+  }
+}
+
+// ============================================================
+// PAGE TITLE (global) — the <page-title> component styles are view-scoped,
+// so non-listing pages (reports / imports / dashboard) can't reuse them.
+// This GLOBAL block gives the same icon-badge + bold-title look to any
+// `.app-page-title` markup. `h5 > i` (direct child) so nested badge icons
+// (e.g. dashboard scope chips) are NOT turned into badges.
+// ============================================================
+.app-page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0 0.5rem;
+  margin-bottom: 0.5rem;
+
+  h5 {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0;
+    font-size: 1.3125rem;          // 21px
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--cui-body-color);
+
+    > i {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin: 0;
+      opacity: 1;
+      font-size: 1.05rem;
+      border-radius: var(--cui-border-radius-lg);
+      background: var(--ct-primary-soft, rgba(var(--cui-primary-rgb), 0.12));
+      color: var(--cui-primary);
+    }
+  }
+}
+
+// Dashboard header (custom flex header with scope badges + toolbar): give the
+// leading icon the same primary-soft badge + bold 21px title, keeping the
+// inline badges/toolbar intact.
+.dashboard-header h5 {
+  font-size: 1.3125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+
+  > i.fa {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    vertical-align: middle;
+    margin-right: 0.6rem !important;        // override .me-2
+    font-size: 1.05rem;
+    border-radius: var(--cui-border-radius-lg);
+    background: var(--ct-primary-soft, rgba(var(--cui-primary-rgb), 0.12));
+    color: var(--cui-primary) !important;   // override .text-muted
+  }
+}
+
+// ============================================================
+// SIDEBAR NAV TYPOGRAPHY — match the new-theme preview.
+// CoreUI exposes sizing vars (set in styles.scss with()) but no font-size /
+// weight vars for nav links or titles, so they live here.
+//   link:  13.5px / 500   (active 600)
+//   title: 11px / 600 / uppercase / .08em
+// ============================================================
+.sidebar-nav {
+  .nav-link {
+    font-size: 0.84375rem;       // 13.5px
+    font-weight: 500;
+  }
+
+  .nav-link.active {
+    font-weight: 600;
+  }
+
+  .nav-title {
+    font-size: 0.6875rem;        // 11px
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+// User menu in the sidebar footer (console view) — full-width card, left-aligned.
+.sidebar-footer.sidebar-user-footer {
+  display: block;
+  padding: 0.5rem;
+}
+
+// Collapsed (narrow) rail: the footer user trigger would be clipped — show
+// only the centered avatar, hide the name/email/caret. When the unfoldable
+// sidebar expands on hover, the full card is revealed again.
+.sidebar-narrow-unfoldable:not(:hover),
+.sidebar-narrow {
+  .sidebar-user-footer { padding: 0.5rem 0; }
+
+  .um-trigger-sidebar {
+    justify-content: center;
+    gap: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .um-trigger-sidebar .um-meta,
+  .um-trigger-sidebar .um-caret {
+    display: none !important;
+  }
+}
+
+// Sidebar header: brand left, collapse toggle right (toggle moved up from the
+// footer, which now holds the user menu).
+.sidebar-header.sidebar-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  .sidebar-fold-toggle {
+    flex: 0 0 auto;
+    margin: 0;
+    cursor: pointer;
+  }
 }
 
 // ============================================================
@@ -22,6 +206,97 @@ body {
 }
 
 // ============================================================
+// FORM CARD — match the new-theme preview (create/edit screens)
+//   • header: surface bg, comfy padding, hairline divider; if a
+//     <default-actions> is slotted in the header it right-aligns
+//   • body: roomy padding
+//   • footer: top divider, right-aligned action buttons
+// Applies to any .card that has a .card-header/.card-footer (forms);
+// the listing card has neither, so it's unaffected.
+// ============================================================
+.card > .card-header {
+  background-color: var(--ct-surface);
+  padding: 1.05rem 1.25rem;
+  border-bottom: 1px solid var(--ct-border-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  // actions slotted into the header push to the right
+  default-actions,
+  page-actions {
+    margin-left: auto;
+  }
+  default-actions .app-actions,
+  page-actions .app-actions { margin-bottom: 0; }
+  default-actions .app-actions .col-md-7,
+  page-actions .app-actions .col-md-7 { display: none; }
+  default-actions .app-actions .row,
+  page-actions .app-actions .row { flex-wrap: nowrap; width: auto; margin: 0; }
+  default-actions .app-actions .col-md-5,
+  page-actions .app-actions .col-md-5 { width: auto; flex: 0 0 auto; padding: 0; }
+}
+
+// Icon badge + title + subtitle when a form opts into the richer header
+// (emitted by the cui generator). Plain `<strong>` headers still work.
+.card > .card-header .form-card-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--cui-border-radius-lg);
+  background: var(--ct-primary-soft, rgba(var(--cui-primary-rgb), 0.12));
+  color: var(--cui-primary);
+  font-size: 1rem;
+}
+.card > .card-header .form-card-title {
+  margin: 0;
+  font-size: 1.1875rem;          // 19px
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--cui-body-color);
+}
+.card > .card-header .form-card-subtitle {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: var(--cui-secondary-color);
+}
+
+.card > .card-footer {
+  background-color: var(--ct-surface);
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--ct-border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+
+  default-actions,
+  page-actions { margin-left: auto; }
+  default-actions .app-actions,
+  page-actions .app-actions { margin-bottom: 0; }
+  default-actions .app-actions .col-md-7,
+  page-actions .app-actions .col-md-7 { display: none; }
+  default-actions .app-actions .row,
+  page-actions .app-actions .row { flex-wrap: nowrap; width: auto; margin: 0; }
+  default-actions .app-actions .col-md-5,
+  page-actions .app-actions .col-md-5 { width: auto; flex: 0 0 auto; padding: 0; }
+}
+
+// Uppercase section label inside the form body (mockup section dividers).
+.form-section-label {
+  font-size: 0.6875rem;          // 11px
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--cui-tertiary-color);
+  margin: 1.5rem 0 0.9rem;
+
+  &:first-child { margin-top: 0; }
+}
+
+// ============================================================
 // FORM GROUP / TEXTAREA DEFAULTS
 // BS5 dropped .form-group; we re-introduce the wrapper rhythm here.
 // Textarea min-height and resize behaviour have no SCSS variable.
@@ -30,6 +305,25 @@ body {
 // ============================================================
 .form-group {
   margin-bottom: 1rem;
+
+  // Mockup field labels: 13px semibold, snug above the control.
+  > label,
+  with-validation label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.8125rem;        // 13px
+    font-weight: 600;
+    color: var(--cui-body-color);
+  }
+
+  // Required marker — red asterisk after the label (forms that opt in via
+  // `.form-group.required`). Matches the mockup's `Full name *`.
+  &.required > label::after,
+  &.required with-validation label::after {
+    content: " *";
+    color: var(--cui-danger);
+    font-weight: 700;
+  }
 }
 
 textarea.form-control {
@@ -374,7 +668,7 @@ textarea.form-control {
   padding: 0.75rem 0 1rem;
   margin-top: 0.5rem;
   border-top: 1px solid var(--cui-border-color);
-  background: var(--cui-white);
+  background: var(--ct-surface);
 }
 
 // Left zone — inline label + input pairs.
@@ -400,14 +694,16 @@ textarea.form-control {
 }
 
 .doc-totals__field-input {
-  width: 6rem;                         // 96px
-  height: 2rem !important;             // 32px
-  padding: 0 0.5rem !important;
-  font-size: 0.8125rem !important;
+  // Size matches the standard themed .form-control (no shrunken height/padding/
+  // font) so these totals fields read consistently with every other input.
+  // Only the totals-specific traits are kept: narrow width, right-aligned
+  // tabular figures, themed surface/border.
+  width: 7rem;                         // 112px — fits "0.00" at the theme font
   font-weight: 500;
   text-align: right;
   font-variant-numeric: tabular-nums;
-  background: var(--cui-white) !important;
+  background: var(--ct-surface) !important;
+  color: var(--ct-text) !important;
   border-color: var(--cui-border-color) !important;
 }
 
@@ -514,7 +810,7 @@ textarea.form-control {
   padding: 0.75rem 0 1rem;
   margin-top: 0.5rem;
   border-top: 1px solid var(--cui-border-color);
-  background: var(--cui-white);
+  background: var(--ct-surface);
 }
 
 .balance-strip__cell {
@@ -551,7 +847,7 @@ textarea.form-control {
 
 // Lifted at-a-glance card (e.g. SO/PO summary).
 .summary-card {
-  background: var(--cui-white);
+  background: var(--ct-surface);
   border: 1px solid var(--cui-border-color);
   border-radius: 0.75rem;
   padding: 0.875rem 1rem;
@@ -641,7 +937,7 @@ textarea.form-control {
 .dt-detail-notes {
   margin-top: 0.75rem;
   padding: 0.75rem 1rem;
-  background: var(--cui-white);
+  background: var(--ct-surface);
   border: 1px solid var(--cui-border-color);
   border-left: 3px solid var(--cui-secondary-color);
   border-radius: 0.5rem;
@@ -725,9 +1021,9 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 50;        // above cards
-  background: $white;
+  background: var(--ct-surface);
   padding: 0.75rem 0;
-  border-bottom: 1px solid $gray-300;
+  border-bottom: 1px solid var(--ct-border);
 }
 
 // Light sub-tab style — transparent nav with an underline on the active tab.
@@ -947,6 +1243,81 @@ a:hover {
   min-height: 2.25rem; // Reduced from 3rem for denser secondary header row
 }
 
+// ============================================================
+// LISTING LAYOUT — match the new-theme preview:
+//   • page header on ONE row: icon+title (left) · actions (right)
+//   • filter bar + table + footer = a single connected card
+// Done at the shared level (no per-listing edits). The listing host is any
+// element with a direct <page-title> child; we make it a flex-wrap row so
+// <page-title> and <page-actions> share row 1 and every other child
+// (offcanvas, .main-content, modals) wraps to its own full-width row.
+// ============================================================
+:has(> page-title) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  column-gap: 1rem;
+}
+:has(> page-title) > page-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+:has(> page-title) > page-actions {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+// Everything that isn't the title/actions drops to its own full-width row.
+:has(> page-title) > *:not(page-title):not(page-actions) {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+// Title shares the row now — drop its own bottom spacing.
+:has(> page-title) > page-title .app-page-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+// Collapse the actions grid down to just the right-aligned buttons.
+:has(> page-title) > page-actions .app-actions {
+  margin-bottom: 0;
+}
+:has(> page-title) > page-actions .app-actions .row {
+  flex-wrap: nowrap;
+  width: auto;
+  margin: 0;
+}
+:has(> page-title) > page-actions .app-actions .col-md-7 {
+  display: none;
+}
+:has(> page-title) > page-actions .app-actions .col-md-5 {
+  width: auto;
+  max-width: none;
+  flex: 0 0 auto;
+  padding: 0;
+}
+// Give the header row breathing room above the connected card.
+:has(> page-title) > .main-content {
+  margin-top: 1.25rem;
+}
+
+// ── Connected filter + table card ──────────────────────────
+// search-panel draws the rounded top + side borders (no bottom); the card
+// continues seamlessly below it, table flush, footer as the card foot.
+.main-content.dt {
+  &:has(.search-panel-wrapper) > .card {
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  > .card > .card-body:has(app-datatable) {
+    padding: 0;
+  }
+}
+// Datatable footer = card footer (mockup spacing).
+.ngx-datatable.material .datatable-footer {
+  padding: 0 0.75rem;
+}
+
 .footer {
   min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
 }
@@ -959,4 +1330,85 @@ a:hover {
   .footer {
     --cui-footer-bg: var(--cui-body-bg);
   }
+}
+
+// ── ngx-bootstrap datepicker accent ───────────────────────────────────────
+// The `.theme-green` skin bakes its accent from the Sass `$primary` (admin
+// indigo) at compile time, so the head bar, selected day, and Today/Clear
+// buttons stay indigo even under the Care teal palette. Repoint those literal
+// hex spots at the runtime `--ct-primary` token so the calendar follows the
+// active app palette (admin = indigo, care = teal) in light AND dark.
+// `:root` prefix raises specificity above ngx-bootstrap's own `.theme-green`
+// rules, which are @use'd AFTER this file in each app's style.scss and would
+// otherwise win the cascade at equal specificity.
+:root .theme-green {
+  .bs-datepicker-head,
+  .bs-datepicker-predefined-btns button.selected,
+  .btn-today-wrapper .btn-success,
+  .btn-clear-wrapper .btn-success,
+  .bs-datepicker-body table td span.selected,
+  .bs-datepicker-body table td.selected span,
+  .bs-datepicker-body table td span[class*='select-']:after,
+  .bs-datepicker-body table td[class*='select-'] span:after,
+  .bs-datepicker-body table td.active-week span:hover {
+    background-color: var(--ct-primary);
+  }
+  .btn-today-wrapper .btn-success,
+  .btn-clear-wrapper .btn-success {
+    border-color: var(--ct-primary);
+  }
+  .bs-datepicker-body table td.week span {
+    color: var(--ct-primary);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// ngx-bootstrap popups (datepicker + typeahead) — pin directly below trigger
+// GLOBAL · all apps (admin / pos / care / talent)
+// ════════════════════════════════════════════════════════════════════════
+// SYMPTOM
+//   In constrained / scrolled / maxed-screen layouts the bsDatepicker calendar
+//   and the typeahead suggestion list opened ABOVE the trigger (cut off behind
+//   a sticky header / overlapping the field+label) instead of dropping straight
+//   down from the input.
+//
+// ROOT CAUSE (verified against ngx-bootstrap 20.0.2 source)
+//   • component-loader.mjs:117-120 — with no `container`, the popup is appended
+//     as the LAST CHILD of the trigger input's parentElement.
+//   • positioning.mjs — the popup is placed with a per-frame
+//     `transform: translate3d(left, top, 0)` (base top:0/left:0), recomputed on
+//     every scroll / resize / animationFrame through the modifier chain
+//     flip → shift → preventOverflow → arrow.
+//   • `preventOverflow` clamps the popup inside the nearest SCROLL PARENT. When
+//     that scroll parent is a viewport-height `overflow:hidden` box (e.g. the
+//     max-screen workspace `.wrapper`) it disagrees with the popup's real
+//     offsetParent, so the modifier shoves the popup toward the boundary's top
+//     edge — i.e. up over the trigger.
+//
+// WHY `container="body"` IS NOT THE FIX
+//   It appends the popup to <body> and positions it at the trigger's document-Y.
+//   Inside a 100vh/overflow:hidden shell, <body> has no height, so the
+//   absolutely-positioned popup grows body.scrollHeight → spurious page scroll.
+//
+// FIX (global, parent-agnostic, deterministic)
+//   Stop relying on the auto-positioner: anchor whatever element the popup was
+//   appended into (its parent) with `:has(> …-container)` — which only matches
+//   WHILE the popup is open, so there's no persistent layout change — then
+//   override ngx's per-frame inline transform/top with `!important` and pin the
+//   popup to the parent's bottom-left. No `container="body"` is used anywhere
+//   in the app, so a body-anchored popup can't be mis-pinned by this.
+:has(> bs-datepicker-container),
+:has(> typeahead-container) {
+  position: relative;
+}
+bs-datepicker-container,
+typeahead-container {
+  position: absolute !important;
+  inset: auto auto auto 0 !important;   // top/right/bottom auto, left 0
+  top: calc(100% + 4px) !important;     // …then drop below the trigger
+  transform: none !important;
+  will-change: auto !important;
+}
+bs-datepicker-container {
+  z-index: 1080;
 }

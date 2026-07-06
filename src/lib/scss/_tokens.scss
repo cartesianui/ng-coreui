@@ -1,0 +1,418 @@
+// ============================================================================
+//  CartesianUI — design tokens + CoreUI / Bootstrap bridge
+//  ---------------------------------------------------------------------------
+//  Ported from docs/new-theme/.../theme/cartesianui-tokens.css.
+//
+//  The handoff names its tokens `--cui-*` (for "CartesianUI"), which collides
+//  with CoreUI's OWN `--cui-*` runtime variables. To keep both namespaces
+//  clean, every handoff token is renamed `--ct-*` here; the BRIDGE block then
+//  re-points CoreUI's `--cui-*` (and plain Bootstrap's `--bs-*`) at the
+//  `--ct-*` tokens.
+//
+//  Axes (the full system, kept live for future per-app runtime switching):
+//    data-theme = admin | care      (color only)
+//    data-mode  = light | dark      (handled by data-coreui-theme at runtime)
+//    data-look  = a | b             (shape / density only)
+//
+//  Defaults (no attributes) = admin · light · look A.
+//
+//  SCOPE NOTE — this pass is LIGHT ONLY. The bridge is scoped to
+//  `:root:not([data-coreui-theme="dark"]), [data-coreui-theme="light"]` so the
+//  existing CoreUI dark color-mode (header toggle) keeps its own defaults until
+//  the dark pass wires the dark `--ct-*` blocks below.
+// ============================================================================
+
+/* ---------------------------------------------------------------------------
+   PALETTE TOKENS  (--ct-*)
+   -------------------------------------------------------------------------- */
+:root,
+[data-theme="admin"][data-mode="light"] {
+  /* surfaces */
+  --ct-canvas:#f3f4fb;       --ct-canvas-rgb:243,244,251;
+  --ct-surface:#ffffff;
+  --ct-surface-2:#f8f9fd;    /* table head, filter bar, inset */
+  --ct-surface-3:#eef0f7;    /* hover / neutral chip */
+  --ct-border:#e6e8f2;
+  --ct-border-soft:#eef0f6;
+  /* text */
+  --ct-text:#1b1f2e;         --ct-text-rgb:27,31,46;
+  --ct-text-muted:#5c6378;
+  --ct-text-faint:#9298ad;
+  /* brand */
+  --ct-primary:#4f46e5;      --ct-primary-rgb:79,70,229;
+  --ct-primary-hover:#4338ca;
+  --ct-on-primary:#ffffff;
+  --ct-primary-soft:#ececff;
+  --ct-primary-border:#d7d8ff;
+  /* status */
+  --ct-success:#15914b;  --ct-success-rgb:21,145,75;   --ct-success-soft:#e6f5ec;
+  --ct-warning:#b8730a;  --ct-warning-rgb:184,115,10;  --ct-warning-soft:#fbf0df;
+  --ct-danger:#d23a3a;   --ct-danger-rgb:210,58,58;    --ct-danger-soft:#fbe9e9;
+  --ct-info:#2563eb;     --ct-info-rgb:37,99,235;      --ct-info-soft:#e7eefe;
+  /* focus ring */
+  --ct-ring:rgba(79,70,229,.32);
+}
+
+/* admin dark — also the DEFAULT dark palette, activated by CoreUI's
+   `data-coreui-theme="dark"` (set on <html> by ColorModeService). Emitted
+   after the :root light block so it wins on the html element in dark mode. */
+[data-theme="admin"][data-mode="dark"],
+[data-coreui-theme="dark"] {
+  color-scheme: dark;
+  --ct-canvas:#0d0f17;       --ct-canvas-rgb:13,15,23;
+  --ct-surface:#161922;
+  --ct-surface-2:#1b1f2a;
+  --ct-surface-3:#232838;
+  --ct-border:#2a2f3e;
+  --ct-border-soft:#222634;
+  --ct-text:#e8eaf4;         --ct-text-rgb:232,234,244;
+  --ct-text-muted:#9aa0b6;
+  --ct-text-faint:#69708a;
+  --ct-primary:#7e76f1;      --ct-primary-rgb:126,118,241;
+  --ct-primary-hover:#9089f5;
+  --ct-on-primary:#ffffff;
+  --ct-primary-soft:#23254a;
+  --ct-primary-border:#39357a;
+  --ct-success:#34c47a;  --ct-success-rgb:52,196,122;  --ct-success-soft:#10271c;
+  --ct-warning:#e0a13a;  --ct-warning-rgb:224,161,58;  --ct-warning-soft:#2a2010;
+  --ct-danger:#f0726f;   --ct-danger-rgb:240,114,111;  --ct-danger-soft:#2c1517;
+  --ct-info:#5e9bf6;     --ct-info-rgb:94,155,246;     --ct-info-soft:#11203a;
+  --ct-ring:rgba(126,118,241,.42);
+}
+
+[data-theme="care"][data-mode="light"] {
+  --ct-canvas:#eff6f4;       --ct-canvas-rgb:239,246,244;
+  --ct-surface:#ffffff;
+  --ct-surface-2:#f4faf8;
+  --ct-surface-3:#e8f2f0;
+  --ct-border:#dde9e6;
+  --ct-border-soft:#e8f1ef;
+  --ct-text:#10201d;         --ct-text-rgb:16,32,29;
+  --ct-text-muted:#4d615c;
+  --ct-text-faint:#8aa09b;
+  --ct-primary:#0c8f82;      --ct-primary-rgb:12,143,130;
+  --ct-primary-hover:#0a766b;
+  --ct-on-primary:#ffffff;
+  --ct-primary-soft:#dff3f0;
+  --ct-primary-border:#bfe6e0;
+  --ct-success:#15914b;  --ct-success-rgb:21,145,75;   --ct-success-soft:#e2f3e9;
+  --ct-warning:#b8730a;  --ct-warning-rgb:184,115,10;  --ct-warning-soft:#f8efdc;
+  --ct-danger:#cf4040;   --ct-danger-rgb:207,64,64;    --ct-danger-soft:#f9e8e8;
+  --ct-info:#1f7fae;     --ct-info-rgb:31,127,174;     --ct-info-soft:#e2f0f6;
+  --ct-ring:rgba(12,143,130,.3);
+}
+
+[data-theme="care"][data-mode="dark"] {
+  --ct-canvas:#071210;       --ct-canvas-rgb:7,18,16;
+  --ct-surface:#0e1a18;
+  --ct-surface-2:#13201d;
+  --ct-surface-3:#1a2825;
+  --ct-border:#243430;
+  --ct-border-soft:#1d2a27;
+  --ct-text:#e1efec;         --ct-text-rgb:225,239,236;
+  --ct-text-muted:#8ba6a0;
+  --ct-text-faint:#5f756f;
+  --ct-primary:#2cd4bf;      --ct-primary-rgb:44,212,191;
+  --ct-primary-hover:#46e0cd;
+  --ct-on-primary:#06120f;
+  --ct-primary-soft:#103029;
+  --ct-primary-border:#1d4d44;
+  --ct-success:#34c47a;  --ct-success-rgb:52,196,122;  --ct-success-soft:#0f2a1d;
+  --ct-warning:#e0a13a;  --ct-warning-rgb:224,161,58;  --ct-warning-soft:#2a2110;
+  --ct-danger:#ef7270;   --ct-danger-rgb:239,114,112;  --ct-danger-soft:#2c1717;
+  --ct-info:#4fb3d9;     --ct-info-rgb:79,179,217;     --ct-info-soft:#0f2733;
+  --ct-ring:rgba(44,212,191,.4);
+}
+
+/* ---------------------------------------------------------------------------
+   SHAPE / DENSITY  (look only — independent of color theme & mode)
+   -------------------------------------------------------------------------- */
+:root,
+[data-look="a"] {            /* A · Cards — soft, elevated, roomy */
+  --ct-radius:14px;
+  --ct-radius-sm:10px;
+  --ct-radius-xs:8px;
+  --ct-pill:999px;
+  --ct-card-shadow:0 1px 2px rgba(20,22,50,.04), 0 16px 32px -20px rgba(20,22,50,.24);
+  --ct-row-pad:15px;
+}
+[data-look="b"] {            /* B · Console — flat, bordered, dense */
+  --ct-radius:8px;
+  --ct-radius-sm:6px;
+  --ct-radius-xs:5px;
+  --ct-pill:6px;
+  --ct-card-shadow:none;
+  --ct-row-pad:10px;
+}
+
+/* ============================================================================
+   BRIDGE — re-point CoreUI (--cui-*) + Bootstrap (--bs-*) at the tokens.
+   ----------------------------------------------------------------------------
+   Applies in BOTH light and dark: `--ct-*` resolves to whichever palette is
+   active on <html> (admin/care × light/dark — the dark blocks above override
+   the :root light values when `data-coreui-theme="dark"` is set). Emitted last
+   in styles.scss so it wins over CoreUI's own dark root defaults.
+   ========================================================================== */
+:root {
+  /* brand + links */
+  --cui-primary:        var(--ct-primary);
+  --cui-primary-rgb:    var(--ct-primary-rgb);
+  --cui-link-color:     var(--ct-primary);
+  --cui-link-color-rgb: var(--ct-primary-rgb);
+  --cui-link-hover-color: var(--ct-primary-hover);
+
+  /* body + surfaces */
+  --cui-body-bg:         var(--ct-canvas);
+  --cui-body-bg-rgb:     var(--ct-canvas-rgb);
+  --cui-body-color:      var(--ct-text);
+  --cui-body-color-rgb:  var(--ct-text-rgb);
+  --cui-emphasis-color:  var(--ct-text);
+  --cui-secondary-color: var(--ct-text-muted);
+  --cui-tertiary-color:  var(--ct-text-faint);
+  --cui-secondary-bg:    var(--ct-surface-2);
+  --cui-tertiary-bg:     var(--ct-surface-3);
+  --cui-border-color:    var(--ct-border);
+
+  /* list-group — softer surface (card level) instead of the default canvas;
+     dividers use the soft border token. */
+  --cui-list-group-bg:           var(--ct-surface);
+  --cui-list-group-border-color: var(--ct-border-soft);
+
+  /* status */
+  --cui-success: var(--ct-success); --cui-success-rgb: var(--ct-success-rgb);
+  --cui-warning: var(--ct-warning); --cui-warning-rgb: var(--ct-warning-rgb);
+  --cui-danger:  var(--ct-danger);  --cui-danger-rgb:  var(--ct-danger-rgb);
+  --cui-info:    var(--ct-info);    --cui-info-rgb:    var(--ct-info-rgb);
+
+  /* soft / subtle backgrounds (alerts, badges, table states) */
+  --cui-primary-bg-subtle: var(--ct-primary-soft);
+  --cui-success-bg-subtle: var(--ct-success-soft);
+  --cui-warning-bg-subtle: var(--ct-warning-soft);
+  --cui-danger-bg-subtle:  var(--ct-danger-soft);
+  --cui-info-bg-subtle:    var(--ct-info-soft);
+  --cui-secondary-bg-subtle: var(--ct-surface-3);
+
+  /* text-emphasis — paired with the *-bg-subtle above so subtle badges/alerts
+     (e.g. `bg-info-subtle text-info-emphasis`) read coherently in light AND
+     dark (saturated token text on the soft token bg). */
+  --cui-primary-text-emphasis:   var(--ct-primary);
+  --cui-success-text-emphasis:   var(--ct-success);
+  --cui-warning-text-emphasis:   var(--ct-warning);
+  --cui-danger-text-emphasis:    var(--ct-danger);
+  --cui-info-text-emphasis:      var(--ct-info);
+  --cui-secondary-text-emphasis: var(--ct-text-muted);
+
+  /* radius — driven by the active look */
+  --cui-border-radius:      var(--ct-radius-sm);
+  --cui-border-radius-sm:   var(--ct-radius-xs);
+  --cui-border-radius-lg:   var(--ct-radius);
+  --cui-border-radius-xl:   var(--ct-radius);
+  --cui-border-radius-pill: var(--ct-pill);
+
+  /* focus ring */
+  --cui-focus-ring-color: var(--ct-ring);
+
+  /* ---- Bootstrap mirror (plain-BS widgets: ngx datepicker, datatable) ---- */
+  --bs-primary:           var(--ct-primary);
+  --bs-primary-rgb:       var(--ct-primary-rgb);
+  --bs-body-bg:           var(--ct-canvas);
+  --bs-body-color:        var(--ct-text);
+  --bs-secondary-color:   var(--ct-text-muted);
+  --bs-tertiary-color:    var(--ct-text-faint);
+  --bs-border-color:      var(--ct-border);
+  --bs-success:           var(--ct-success);
+  --bs-warning:           var(--ct-warning);
+  --bs-danger:            var(--ct-danger);
+  --bs-info:              var(--ct-info);
+  --bs-border-radius:     var(--ct-radius-sm);
+  --bs-border-radius-lg:  var(--ct-radius);
+  --bs-border-radius-pill:var(--ct-pill);
+  --bs-emphasis-color:    var(--ct-text);
+
+  /* ---- component-level token wiring (CoreUI runtime vars) -------------- */
+  .card {
+    --cui-card-bg:           var(--ct-surface);
+    --cui-card-cap-bg:       var(--ct-surface);   /* white header (mockup) */
+    --cui-card-border-color: var(--ct-border);
+    box-shadow: var(--ct-card-shadow);
+  }
+  .table {
+    --cui-table-bg:           var(--ct-surface);
+    --cui-table-border-color: var(--ct-border-soft);
+    --cui-table-color:        var(--ct-text);
+  }
+  .nav-tabs {
+    --cui-nav-tabs-border-color:             var(--ct-primary);
+    --cui-nav-tabs-link-active-bg:           var(--ct-primary);
+    --cui-nav-tabs-link-active-border-color: var(--ct-primary);
+  }
+  /* CoreUI bakes every $primary-derived shade (hover/active/disabled/focus-ring)
+     as a literal hex at compile time, so the base-var repoint above isn't enough
+     — the disabled bg, the focus glow, and the outline/ghost variants stay the
+     baked admin indigo and leak into Care. Repoint the FULL set onto --ct-* so
+     buttons (incl. disabled `Call`, focused `Save`) follow the active palette. */
+  .btn-primary {
+    --cui-btn-bg:                  var(--ct-primary);
+    --cui-btn-border-color:        var(--ct-primary);
+    --cui-btn-hover-bg:            var(--ct-primary-hover);
+    --cui-btn-hover-border-color:  var(--ct-primary-hover);
+    --cui-btn-active-bg:           var(--ct-primary-hover);
+    --cui-btn-active-border-color: var(--ct-primary-hover);
+    --cui-btn-color:               var(--ct-on-primary);
+    --cui-btn-hover-color:         var(--ct-on-primary);
+    --cui-btn-active-color:        var(--ct-on-primary);
+    --cui-btn-disabled-bg:         var(--ct-primary);
+    --cui-btn-disabled-border-color: var(--ct-primary);
+    --cui-btn-disabled-color:      var(--ct-on-primary);
+    --cui-btn-focus-shadow-rgb:    var(--ct-primary-rgb);
+  }
+  .btn-outline-primary {
+    --cui-btn-color:               var(--ct-primary);
+    --cui-btn-border-color:        var(--ct-primary);
+    --cui-btn-hover-bg:            var(--ct-primary);
+    --cui-btn-hover-border-color:  var(--ct-primary);
+    --cui-btn-hover-color:         var(--ct-on-primary);
+    --cui-btn-active-bg:           var(--ct-primary);
+    --cui-btn-active-border-color: var(--ct-primary);
+    --cui-btn-active-color:        var(--ct-on-primary);
+    --cui-btn-disabled-color:      var(--ct-primary);
+    --cui-btn-disabled-border-color: var(--ct-primary);
+    --cui-btn-focus-shadow-rgb:    var(--ct-primary-rgb);
+  }
+  .btn-ghost-primary {
+    --cui-btn-color:               var(--ct-primary);
+    --cui-btn-hover-bg:            var(--ct-primary);
+    --cui-btn-hover-border-color:  var(--ct-primary);
+    --cui-btn-hover-color:         var(--ct-on-primary);
+    --cui-btn-active-bg:           var(--ct-primary);
+    --cui-btn-active-border-color: var(--ct-primary);
+    --cui-btn-active-color:        var(--ct-on-primary);
+    --cui-btn-disabled-color:      var(--ct-primary);
+    --cui-btn-focus-shadow-rgb:    var(--ct-primary-rgb);
+  }
+  /* Modals (CoreUI + plain Bootstrap .modal-content, e.g. POS popups) — sit on
+     the surface with themed text/borders so they adapt in dark. */
+  .modal-content {
+    --cui-modal-bg:           var(--ct-surface);
+    --cui-modal-color:        var(--ct-text);
+    --cui-modal-border-color: var(--ct-border);
+    background-color: var(--ct-surface);
+    color: var(--ct-text);
+    border-color: var(--ct-border);
+  }
+  .modal-header, .modal-footer { border-color: var(--ct-border); }
+  /* Neutral outline button — Bootstrap's $secondary gray doesn't adapt and is
+     near-invisible on the dark surface. Tokenize so it reads in both modes
+     (muted text + theme border, surface-2 hover). */
+  .btn-outline-secondary {
+    --cui-btn-color:               var(--cui-secondary-color);
+    --cui-btn-border-color:        var(--cui-border-color);
+    --cui-btn-hover-bg:            var(--cui-secondary-bg);
+    --cui-btn-hover-color:         var(--cui-body-color);
+    --cui-btn-hover-border-color:  var(--cui-border-color);
+    --cui-btn-active-bg:           var(--cui-secondary-bg);
+    --cui-btn-active-color:        var(--cui-body-color);
+    --cui-btn-active-border-color: var(--cui-border-color);
+  }
+  /* Inputs sit on the surface with the soft theme border + themed text (mockup),
+     not the baked light values — critical for dark mode (else dark text on a
+     dark surface is invisible). Covers text inputs, selects, textareas. */
+  .form-control,
+  .form-select {
+    background-color: var(--ct-surface);
+    border-color: var(--ct-border);
+    color: var(--ct-text);
+  }
+  .form-control::placeholder { color: var(--ct-text-faint); }
+  .form-select { --cui-form-select-color: var(--ct-text); }
+  .form-control:focus,
+  .form-select:focus {
+    background-color: var(--ct-surface);
+    border-color: var(--ct-primary);
+    color: var(--ct-text);
+    box-shadow: 0 0 0 0.2rem var(--ct-ring);
+  }
+  /* Validated fields (e.g. the vitals form's `validate required` inputs) get a
+     green/red focus GLOW from CoreUI's `.is-valid:focus` / `.is-invalid:focus`,
+     which clashes with the neutral teal ring every other input shows. Keep the
+     glow the theme ring (focus = teal everywhere); the colored BORDER still
+     conveys the valid/invalid state. Higher specificity + emitted last wins. */
+  .form-control.is-valid:focus,
+  .form-select.is-valid:focus,
+  .form-control.is-invalid:focus,
+  .form-select.is-invalid:focus,
+  .was-validated .form-control:valid:focus,
+  .was-validated .form-select:valid:focus,
+  .was-validated .form-control:invalid:focus,
+  .was-validated .form-select:invalid:focus {
+    box-shadow: 0 0 0 0.2rem var(--ct-ring);
+  }
+  /* disabled/readonly inputs — muted surface, still legible */
+  .form-control:disabled,
+  .form-control[readonly],
+  .form-select:disabled {
+    background-color: var(--ct-surface-2);
+    color: var(--ct-text-muted);
+  }
+  /* Native <select> option list — themed to match the typeahead dropdown so
+     it reads the same in BOTH palettes (admin indigo / care teal) instead of
+     the browser's default blue highlight. Token-driven, so each app's --ct-*
+     palette flows through automatically. (The open option list itself is
+     OS-rendered; browsers honor option bg/color + the :checked highlight on
+     Windows/Linux — macOS ignores it and falls back to native, which is fine.) */
+  .form-select option {
+    background-color: var(--ct-surface);
+    color: var(--ct-text);
+  }
+  .form-select option:checked,
+  .form-select option:hover,
+  .form-select option:focus {
+    background-color: var(--ct-primary);
+    color: var(--ct-on-primary);
+  }
+  /* input-group add-ons (icons / text) follow the theme too */
+  .input-group-text {
+    background-color: var(--ct-surface-2);
+    border-color: var(--ct-border);
+    color: var(--ct-text-muted);
+  }
+  /* checkbox / radio accent */
+  .form-check-input { background-color: var(--ct-surface); border-color: var(--ct-border); }
+  .form-check-input:checked { background-color: var(--ct-primary); border-color: var(--ct-primary); }
+
+  /* ---- sidebar (Look-B shell: admin / POS / talent) ------------------- */
+  /* Light "surface" sidebar matching the mockup: white panel, muted nav,
+     primary-soft active item. Set on both .sidebar and .sidebar-nav because
+     CoreUI re-declares the nav-link/group/bullet vars locally on .sidebar-nav. */
+  .sidebar,
+  .sidebar-nav {
+    --cui-sidebar-bg:                          var(--ct-surface);
+    --cui-sidebar-color:                       var(--ct-text-muted);
+    --cui-sidebar-border-color:                var(--ct-border);
+    --cui-sidebar-brand-bg:                    var(--ct-surface);
+    --cui-sidebar-brand-color:                 var(--ct-text);
+
+    --cui-sidebar-nav-title-color:             var(--ct-text-faint);
+    --cui-sidebar-nav-link-color:              var(--ct-text-muted);
+    --cui-sidebar-nav-link-icon-color:         var(--ct-text-faint);
+
+    --cui-sidebar-nav-link-hover-color:        var(--ct-text);
+    --cui-sidebar-nav-link-hover-bg:           var(--ct-surface-3);
+    --cui-sidebar-nav-link-hover-icon-color:   var(--ct-primary);
+
+    --cui-sidebar-nav-link-active-color:       var(--ct-primary);
+    --cui-sidebar-nav-link-active-bg:          var(--ct-primary-soft);
+    --cui-sidebar-nav-link-active-icon-color:  var(--ct-primary);
+
+    --cui-sidebar-nav-group-indicator-color:       var(--ct-text-faint);
+    --cui-sidebar-nav-group-indicator-hover-color: var(--ct-primary);
+    --cui-sidebar-nav-group-bg:                var(--ct-surface-2);
+
+    --cui-sidebar-link-active-icon-bullet-bg:           var(--ct-primary);
+    --cui-sidebar-link-active-icon-bullet-border-color: var(--ct-primary);
+    --cui-sidebar-link-hover-icon-bullet-bg:            var(--ct-text-faint);
+    --cui-sidebar-link-hover-icon-bullet-border-color:  var(--ct-text-faint);
+  }
+  /* right divider line between the white sidebar and the canvas content */
+  .sidebar { border-right: 1px solid var(--ct-border); }
+}

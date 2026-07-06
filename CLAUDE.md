@@ -1,3 +1,11 @@
+> ⚠️ SCOPE OF THE RULES BELOW: they govern the **theme-modernization** task
+> only (restyling sidebar/header/forms via Sass). They do **not** forbid
+> **functional** changes to the app-shell components in this lib (e.g.
+> navigation/workspace features in `default/` `default-layout` / `default-header`).
+> Functional features that genuinely require HTML/TS — like the header
+> workspace switcher — are permitted; the "Sass-variable-overrides only" rule
+> applies when you are *theming*, not when you are *building shell behavior*.
+
 You are a senior UI engineer and design-system architect.
 You are an expert in Sass, Bootstrap 5, and CoreUI theming internals.
 

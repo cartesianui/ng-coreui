@@ -1,0 +1,115 @@
+<c-dropdown
+  variant="nav-item"
+  [alignment]="placement === 'sidebar' ? 'start' : 'end'"
+  [placement]="placement === 'sidebar' ? 'top-start' : 'bottom-end'"
+  [popperOptions]="placement === 'sidebar' ? { strategy: 'fixed', modifiers: [{ name: 'offset', options: { offset: [10, 10] } }] } : {}"
+  class="user-menu-dropdown"
+  [class.um-sidebar]="placement === 'sidebar'"
+>
+  <!-- Trigger: header pill -->
+  @if (placement === 'header') {
+    <button cButton color="" [caret]="false" cDropdownToggle class="um-trigger um-trigger-header">
+      <span class="um-avatar um-avatar-md">{{ initials() }}</span>
+      @if (displayName()) { <span class="um-name d-none d-md-inline">{{ displayName() }}</span> }
+      <svg class="um-caret" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+  }
+
+  <!-- Trigger: sidebar-footer card -->
+  @if (placement === 'sidebar') {
+    <button cButton color="" [caret]="false" cDropdownToggle class="um-trigger um-trigger-sidebar">
+      <span class="um-avatar um-avatar-md">{{ initials() }}</span>
+      <span class="um-meta">
+        @if (displayName()) { <span class="um-name">{{ displayName() }}</span> }
+        @if (displayEmail()) { <span class="um-sub">{{ displayEmail() }}</span> }
+      </span>
+      <svg class="um-caret" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+  }
+
+  <ul cDropdownMenu class="user-menu">
+    <li class="user-menu-card">
+      <span class="um-avatar um-avatar-lg">{{ initials() }}</span>
+      <div class="user-menu-card-meta">
+        @if (displayName()) { <div class="user-menu-name">{{ displayName() }}</div> }
+        @if (displayEmail()) { <div class="user-menu-email">{{ displayEmail() }}</div> }
+      </div>
+    </li>
+
+    <!-- Feature-contributed groups (e.g. shopifier's store switcher). -->
+    @for (section of menuSections(); track section.id) {
+      @if (section.title) { <li class="user-menu-section">{{ section.title }}</li> }
+      @for (item of section.items; track item.id) {
+        <li>
+          <a cDropdownItem
+             role="button"
+             style="cursor: pointer;"
+             class="user-menu-item"
+             [class.active]="item.active"
+             (click)="item.handler()">
+            @if (item.icon) { <i [ngClass]="item.icon"></i> }
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
+      <li><hr cDropdownDivider /></li>
+    }
+
+    <li class="user-menu-section">Settings</li>
+
+    <li>
+      <a routerLink="/admin/settings/profile" cDropdownItem class="user-menu-item">
+        <svg cIcon name="cilUser"></svg>
+        <span>Profile</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/settings/profile" cDropdownItem class="user-menu-item">
+        <svg cIcon name="cilUser"></svg>
+        <span>User Settings</span>
+      </a>
+    </li>
+    @if (canManageWorkspace()) {
+      <li>
+        <a routerLink="/admin/settings/tenant" cDropdownItem class="user-menu-item">
+          <svg cIcon name="cilBuilding"></svg>
+          <span>Tenant Settings</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/settings/domain" cDropdownItem class="user-menu-item">
+          <svg cIcon name="cilGlobeAlt"></svg>
+          <span>Domain Settings</span>
+        </a>
+      </li>
+    }
+
+    <li><hr cDropdownDivider /></li>
+
+    <!-- Feature actions (e.g. "Done for Today") — sit alongside Sign Out. -->
+    @for (action of headerActions(); track action.id) {
+      <li>
+        <a cDropdownItem
+           role="button"
+           style="cursor: pointer;"
+           class="user-menu-item"
+           [class.disabled]="action.disabled"
+           [title]="action.title || action.label"
+           (click)="!action.disabled && action.handler()">
+          @if (action.icon) { <i [ngClass]="action.icon"></i> }
+          <span>{{ action.label }}</span>
+        </a>
+        @if (action.note) {
+          <div class="um-action-note">{{ action.note }}</div>
+        }
+      </li>
+    }
+
+    <li>
+      <a cDropdownItem class="user-menu-item user-menu-item-danger" (click)="logout()">
+        <svg cIcon name="cilLockLocked"></svg>
+        <span>Log Out</span>
+      </a>
+    </li>
+  </ul>
+</c-dropdown>

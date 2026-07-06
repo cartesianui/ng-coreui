@@ -1,0 +1,136 @@
+<!--<c-header class="mb-2 d-print-none" position="sticky">-->
+<ng-container>
+  <c-container [fluid]="true">
+    <!-- Sidebar toggler — only in sidebar mode (hidden in the sidebar-less
+         header-nav shells used by POS / Care). -->
+    @if (!headerNavLinks.length) {
+      <button toggle="visible" cHeaderToggler [cSidebarToggle]="sidebarId" class="ps-1">
+        <svg cIcon name="cilMenu" size="lg"></svg>
+      </button>
+    }
+
+    <!-- Header-nav mode (sidebar-less): brand + the host's flat nav items
+         rendered as horizontal links. Active link is underlined like the
+         section tabs. -->
+    @if (headerNavLinks.length) {
+      <a class="header-brand d-inline-flex align-items-center me-3" routerLink="./" title="Home">
+        <img src="assets/img/brand/logo.svg" alt="Logo" height="26" />
+      </a>
+      <c-header-nav class="d-flex flex-wrap me-auto app-header-nav">
+        @for (item of headerNavLinks; track item.url) {
+          <c-nav-item>
+            <a cNavLink [routerLink]="item.url" routerLinkActive="active">
+              @if (item.icon) { <i [ngClass]="item.icon" class="me-2 ws-icon"></i> }
+              <span>{{ item.name }}</span>
+            </a>
+          </c-nav-item>
+        }
+      </c-header-nav>
+    }
+
+    <!-- Global dashboard — the all-sections overview, above every
+         section. Always reachable via this leading Home button. -->
+    @if (sections().length) {
+      <a class="header-home d-none d-lg-inline-flex align-items-center"
+         routerLink="/admin/dashboard"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         title="Dashboard">
+        <i class="fa fa-gauge-high me-2"></i>
+        <span>Dashboard</span>
+      </a>
+      <span class="header-home-divider d-none d-lg-inline-block"></span>
+    }
+    <!-- Section tabs — top-level domain switcher (Sales | Purchase | …).
+         Rendered only in section mode; the active tab scopes the sidebar. -->
+    @if (sections().length) {
+      <c-header-nav class="d-none d-lg-flex me-auto section-nav">
+        @for (ws of sections(); track ws.key) {
+          <c-nav-item>
+            <a cNavLink
+               role="button"
+               style="cursor: pointer;"
+               [class.active]="ws.key === activeSectionKey()"
+               (click)="switchSection(ws)">
+              @if (ws.icon) { <i [ngClass]="ws.icon" class="me-2 ws-icon"></i> }
+              <span>{{ ws.label }}</span>
+            </a>
+          </c-nav-item>
+        }
+      </c-header-nav>
+    }
+    <!-- <c-header-nav class="d-none d-lg-flex">
+      <c-nav-item>
+        <a routerLink="./" cNavLink>
+          <svg cIcon name="cilBell" size="lg"></svg>
+        </a>
+      </c-nav-item>
+      <c-nav-item>
+        <a routerLink="./" cNavLink>
+          <svg cIcon name="cilList" size="lg"></svg>
+        </a>
+      </c-nav-item>
+      <c-nav-item>
+        <a routerLink="./" cNavLink>
+          <svg cIcon name="cilEnvelopeOpen" size="lg"></svg>
+        </a>
+      </c-nav-item>
+    </c-header-nav> -->
+
+    <!-- <c-header-nav class="ms-auto ms-md-0">
+      <div class="nav-item py-1">
+        <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
+      </div>
+      <ng-container *ngTemplateOutlet="themeDropdown" />
+      <div class="nav-item py-1">
+        <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
+      </div>
+    </c-header-nav> -->
+
+    <!-- Feature-contributed actions (e.g. POS/Care "Done for Today") now live
+         in the user menu (alongside Sign Out) — see UserMenuComponent. -->
+
+    <!-- Top-navbar tools (Look-A header-nav shell, e.g. Care): search pill +
+         notification bell, sitting right of the horizontal nav links. -->
+    @if (headerNavLinks.length) {
+      <div class="header-tools d-none d-md-flex align-items-center gap-2 ms-auto">
+        <label class="header-search">
+          <i class="fa fa-magnifying-glass"></i>
+          <input type="search" placeholder="Search anything…" aria-label="Search" />
+        </label>
+        <button type="button" class="header-bell" aria-label="Notifications">
+          <i class="fa fa-bell"></i>
+        </button>
+      </div>
+    }
+
+    <!-- Light / dark theme switcher — icon + label pill (matches source preview Mode toggle) -->
+    <button type="button"
+            class="header-theme-toggle"
+            [class.ms-auto]="!headerNavLinks.length && !sections().length"
+            (click)="toggleTheme()"
+            [title]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+            aria-label="Toggle light/dark theme">
+      <i class="fa" [class.fa-sun]="isDark()" [class.fa-moon]="!isDark()"></i>
+      <span>{{ isDark() ? 'Light' : 'Dark' }}</span>
+    </button>
+
+    <!-- CartaAI assistant launcher — shell-level co-pilot, available app-wide.
+         Owns its own chat panel + open state; pushes itself (and the avatar)
+         to the right when no feature actions are present. -->
+    <ai-carta-assistant class="d-flex align-items-center"></ai-carta-assistant>
+
+    <!-- User menu in the header (topnav apps only). In console/sidebar apps
+         it lives in the sidebar footer instead, so it's omitted here. -->
+    @if (headerNavLinks.length) {
+      <c-header-nav class="ms-3">
+        <app-user-menu placement="header"></app-user-menu>
+      </c-header-nav>
+    }
+  </c-container>
+  <!--  <c-header-divider></c-header-divider>-->
+  <!--  <c-container [fluid]="true" style="justify-content: end;">-->
+  <!--    <c-breadcrumb-router class="ms-2"></c-breadcrumb-router>-->
+  <!--  </c-container>-->
+</ng-container>
+<!--</c-header>-->

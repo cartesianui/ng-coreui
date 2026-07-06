@@ -1,0 +1,211 @@
+:host {
+  display: block;
+}
+:host.um-footer {
+  width: 100%;
+}
+
+// ─── Initials avatar (matches source — initials in a primary-soft circle) ──
+.um-avatar {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--ct-primary-soft, rgba(var(--cui-primary-rgb), 0.12));
+  color: var(--cui-primary);
+  font-weight: 700;
+  line-height: 1;
+}
+.um-avatar-md { width: 34px; height: 34px; font-size: 0.72rem; }
+.um-avatar-lg { width: 40px; height: 40px; font-size: 0.85rem; }
+
+// Feature-action note — small muted caption under the menu item, indented to
+// align beneath the label (past the icon).
+:host ::ng-deep .um-action-note {
+  padding: 0 16px 8px 49px;
+  margin-top: -2px;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--cui-tertiary-color);
+}
+
+// ─── Triggers ────────────────────────────────────────────────
+:host ::ng-deep .um-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--cui-border-color);
+  background: var(--ct-surface, var(--cui-body-bg));
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+// Header pill (topnav apps) — rounded pill, avatar + name + caret.
+:host ::ng-deep .um-trigger-header {
+  padding: 0.25rem 0.5rem 0.25rem 0.3rem;
+  border-radius: var(--cui-border-radius-pill);
+
+  .um-name {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--cui-body-color);
+  }
+  .um-caret { color: var(--cui-tertiary-color); }
+
+  &:hover { background: var(--cui-secondary-bg); }
+}
+
+// Sidebar-footer card (console apps) — full-width, avatar + name/email + caret.
+:host ::ng-deep .um-trigger-sidebar {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border-color: transparent;
+  background: transparent;
+  border-radius: var(--cui-border-radius);
+
+  .um-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    line-height: 1.25;
+  }
+  .um-name {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--cui-body-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .um-sub {
+    font-size: 0.72rem;
+    color: var(--cui-tertiary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .um-caret { margin-left: auto; color: var(--cui-tertiary-color); }
+
+  &:hover { background: var(--cui-secondary-bg); }
+}
+
+// ─── Dropdown menu (shared, moved from default-header) ───────
+:host ::ng-deep .user-menu.dropdown-menu {
+  min-width: 224px;
+  // top/sides 0 so the card header stays full-bleed; 6px bottom so the last
+  // item (Log Out) doesn't touch the rounded bottom edge.
+  padding: 0 0 6px;
+  margin-top: 8px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--cui-border-color);
+  // Stronger elevation so the menu lifts clearly off the sidebar (mockup).
+  box-shadow: 0 16px 38px -10px rgba(20, 22, 50, 0.34), 0 4px 12px -6px rgba(20, 22, 50, 0.18);
+  overflow: hidden;
+  background-color: var(--ct-surface, #fff);
+
+  .user-menu-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(var(--cui-primary-rgb), 0.06), rgba(var(--cui-primary-rgb), 0));
+    border-bottom: 1px solid var(--cui-border-color);
+
+    > c-avatar,
+    > .avatar { flex-shrink: 0; }
+  }
+
+  .user-menu-card-meta { flex: 1; min-width: 0; }
+
+  .user-menu-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--cui-body-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-menu-email {
+    font-size: 0.8rem;
+    color: var(--cui-secondary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-menu-section {
+    padding: 12px 16px 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cui-secondary-color);
+  }
+
+  .user-menu-item.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    // Inset + rounded so the hover pill never touches the menu's side/bottom
+    // borders or rounded corners (matches the source). width is constrained so
+    // the 6px side margins fit INSIDE the menu (else .dropdown-item's width:100%
+    // + margin overflows and the hover bg gets clipped on the right).
+    width: calc(100% - 12px);
+    margin: 2px 6px;
+    padding: 9px 11px;
+    color: var(--cui-body-color);
+    font-weight: 500;
+    background-color: transparent;
+    border-radius: var(--cui-border-radius-sm);
+    transition: background-color 120ms ease, color 120ms ease;
+
+    > svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--cui-secondary-color);
+      transition: color 120ms ease;
+    }
+    > i { width: 18px; text-align: center; color: var(--cui-secondary-color); }
+
+    > span { flex: 1; min-width: 0; }
+
+    &:hover,
+    &:focus {
+      background-color: var(--cui-tertiary-bg);
+      color: var(--cui-body-color);
+      > svg, > i { color: var(--cui-primary); }
+    }
+
+    &.active,
+    &:active {
+      background-color: rgba(var(--cui-primary-rgb), 0.1);
+      color: var(--cui-primary);
+      > svg, > i { color: var(--cui-primary); }
+    }
+  }
+
+  // Logout — red text + icon in ALL states (matches source "Sign out").
+  .user-menu-item.user-menu-item-danger.dropdown-item {
+    cursor: pointer;
+    color: var(--cui-danger);
+    > svg, > i { color: var(--cui-danger); }
+
+    &:hover,
+    &:focus {
+      background-color: var(--ct-danger-soft, rgba(var(--cui-danger-rgb), 0.08));
+      color: var(--cui-danger);
+      > svg, > i { color: var(--cui-danger); }
+    }
+  }
+
+  hr.dropdown-divider {
+    margin: 6px 0;
+    border-color: var(--cui-border-color);
+    opacity: 1;
+  }
+}

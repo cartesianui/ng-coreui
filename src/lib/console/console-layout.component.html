@@ -1,7 +1,7 @@
 <!--sidebar-->
-<c-sidebar #sidebar="cSidebar" class="d-print-none sidebar sidebar-fixed" colorScheme="dark" id="sidebar" visible>
+<c-sidebar #sidebar="cSidebar" class="d-print-none sidebar sidebar-fixed" colorScheme="light" id="sidebar" visible>
 
-<c-sidebar-header class="border-bottom">
+<c-sidebar-header class="border-bottom sidebar-header-row">
   <c-sidebar-brand
     [brandFull]="{
       src: 'assets/img/brand/logo.svg',
@@ -17,20 +17,32 @@
   >
 
   </c-sidebar-brand>
+
+  <!-- Collapse (unfold) toggle — moved here from the footer (footer now holds
+       the user menu). Folds the sidebar to the narrow icon rail. Mirrors the
+       original structure: container carries cSidebarToggle + toggle, the inner
+       button carries cSidebarToggler (the two directives must NOT share an el). -->
+  @if (!sidebar.narrow) {
+    <div cSidebarToggle="sidebar" toggle="unfoldable" class="sidebar-fold-toggle d-none d-lg-flex" style="cursor: pointer;">
+      <button cSidebarToggler aria-label="Collapse sidebar"></button>
+    </div>
+  }
 </c-sidebar-header>
   <ng-scrollbar pointerEventsMethod="scrollbar" visibility="hover">
     <c-sidebar-nav [navItems]="navItems" dropdownMode="none" compact />
   </ng-scrollbar>
 
+  <!-- User menu in the sidebar footer (console view) — matches the source.
+       Hidden when the sidebar is collapsed to the narrow rail. -->
   @if (!sidebar.narrow) {
-    <c-sidebar-footer cSidebarToggle="sidebar" class="border-top d-none d-lg-flex" toggle="unfoldable" style="cursor: pointer;">
-      <button cSidebarToggler aria-label="Toggle sidebar fold"></button>
+    <c-sidebar-footer class="border-top sidebar-user-footer">
+      <app-user-menu placement="sidebar" class="w-100"></app-user-menu>
     </c-sidebar-footer>
   }
 </c-sidebar>
 
 <!--main-->
-<div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent">
+<div class="wrapper d-flex flex-column min-vh-100 dark:bg-transparent">
   <!--app-header-->
   <app-default-header
     class="mb-4 d-print-none header header-sticky p-0 shadow-sm"

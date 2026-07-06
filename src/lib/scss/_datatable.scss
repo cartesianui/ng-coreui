@@ -11,10 +11,15 @@
 
   &.material {
     box-shadow: none !important;
+    // swimlane material hardcodes `background:#fff` — point it at the surface
+    // token so the table follows light/dark.
+    background-color: var(--ct-surface);
 
     // ─── Header ──────────────────────────────────────
+    // Mockup chrome: surface-2 strip, uppercase faint column labels.
     .datatable-header {
-      text-transform: none;
+      background-color: var(--cui-secondary-bg);
+      border-bottom: 1px solid var(--cui-border-color);
 
       .datatable-header-inner {
         display: flex !important;
@@ -25,23 +30,30 @@
       .datatable-header-cell {
         display: flex !important;
         align-items: center !important;
-        padding: 0.25rem 0.75rem !important;
-        font-size: 0.8125rem;
+        padding: 0.5rem 0.75rem !important;
+        // swimlane material sets this cell bg to #fff — override to transparent
+        // so the header strip matches the filter bar (--cui-secondary-bg).
+        background-color: transparent !important;
+        font-size: 0.6875rem;            // 11px
         font-weight: 600;
-        color: $gray-700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--cui-tertiary-color);
         line-height: 1.3;
-        letter-spacing: 0.01em;
 
         .datatable-header-cell-label {
-          color: $gray-700;
+          color: var(--cui-tertiary-color);
         }
 
+        // Mockup headers show NO sort carets at rest — reveal on hover only
+        // (keeps sorting functional without the visual noise).
         .sort-btn {
-          opacity: 0.5;
+          opacity: 0;
+          transition: opacity 0.12s ease;
         }
 
         &:hover .sort-btn {
-          opacity: 1;
+          opacity: 0.55;
         }
       }
     }
@@ -49,32 +61,38 @@
     // ─── Body ────────────────────────────────────────
     .datatable-body {
       .datatable-body-row {
-        border-bottom: 1px solid $gray-100;
+        // soft divider between rows (matches source light + dark)
+        border-bottom: 1px solid var(--ct-border-soft);
         transition: background-color 0.15s ease;
 
         .datatable-body-cell {
           display: flex !important;
           align-items: center !important;
-          padding: 0.25rem 0.75rem !important;
+          padding: var(--ct-row-pad, 0.5rem) 0.75rem !important;
           font-size: 0.875rem;
           line-height: 1.4;
-          color: $gray-800;
+          color: var(--cui-body-color);
         }
 
-        // Hover
-        &:hover {
-          background-color: rgba($primary, 0.04);
+        // Hover — subtle surface tint (mockup row hover). swimlane material
+        // sets #eee on BOTH the row AND its inner .datatable-row-group, so we
+        // must override the group too (else a white hover bleeds through in dark).
+        &:hover,
+        &:hover .datatable-row-group {
+          background-color: var(--cui-secondary-bg) !important;
         }
 
         // Selected row
-        &.active {
-          background-color: rgba($primary, 0.08) !important;
+        &.active,
+        &.active .datatable-row-group {
+          background-color: rgba(var(--cui-primary-rgb), 0.10) !important;
         }
       }
 
-      // Links in cells
+      // Links in cells — runtime token (not the baked Sass $primary) so they
+      // follow the active app palette (admin indigo / care teal).
       a {
-        color: $primary;
+        color: var(--cui-primary);
         text-decoration: none;
         font-weight: 500;
 
@@ -123,32 +141,84 @@
     // ─── Footer / Pagination ─────────────────────────
     .datatable-footer {
       font-size: 0.8125rem;
+      border-top: 1px solid var(--cui-border-color);
+      color: var(--cui-secondary-color);
+
+      // count on the left, pager pushed to the right (not stretched/centered).
+      .datatable-footer-inner {
+        justify-content: space-between;
+      }
 
       .page-count {
+        flex: 0 1 auto;
         line-height: 2.5rem;
         height: 2.5rem;
         padding: 0 0.75rem;
-        color: $gray-600;
+        color: var(--cui-secondary-color);
       }
 
       .datatable-pager {
-        a {
-          height: 1.75rem;
-          min-width: 1.75rem;
-          line-height: 1.75rem;
+        flex: 0 0 auto;
+        margin-left: auto;
+      }
+
+      // Pager — bordered ~30px buttons, primary active, dimmed disabled
+      // (matches the source preview; works light + dark via tokens). NOTE:
+      // the active/disabled classes live on the <li>, not the <a>.
+      .datatable-pager {
+        .pager {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        li { display: inline-flex; }
+
+        li a {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 1.875rem;            // 30px
+          min-width: 1.875rem;
+          padding: 0 0.4rem;
+          margin: 0;
+          line-height: normal;         // flex align-items centers the digit; a forced
+                                       // line-height:1 biased the glyph toward the top
+          border: 1px solid var(--cui-border-color);
+          border-radius: var(--cui-border-radius-sm);
+          background-color: var(--ct-surface);
+          color: var(--cui-secondary-color);
           font-size: 0.8125rem;
-          border-radius: 0.25rem;
-          margin: 0 0.125rem;
-          color: $gray-600;
+          cursor: pointer;
+          transition: color 0.12s ease, border-color 0.12s ease, background-color 0.12s ease;
+
+          i { font-size: 0.7rem; }
 
           &:hover {
-            background-color: $gray-200;
-            color: $gray-800;
+            border-color: var(--cui-primary);
+            color: var(--cui-primary);
+            background-color: var(--ct-surface);
           }
+        }
 
-          &.active {
-            background-color: $primary;
-            color: $white;
+        li.active a {
+          background-color: var(--cui-primary);
+          border-color: var(--cui-primary);
+          color: var(--ct-on-primary, #fff);
+          font-weight: 600;
+        }
+
+        li.disabled a {
+          color: var(--cui-tertiary-color);
+          cursor: default;
+          opacity: 0.55;
+
+          &:hover {
+            border-color: var(--cui-border-color);
+            color: var(--cui-tertiary-color);
           }
         }
       }
@@ -158,7 +228,7 @@
     .datatable-summary-row {
       .datatable-body-row .datatable-body-cell {
         font-weight: 600;
-        background-color: $gray-100;
+        background-color: var(--cui-secondary-bg);
       }
     }
 
@@ -169,7 +239,7 @@
       justify-content: center;
       text-align: center;
       padding: 3rem 1rem;
-      color: $gray-400;
+      color: var(--cui-tertiary-color);
       font-size: 0.875rem;
     }
   }
@@ -177,7 +247,7 @@
   &.fixed-row {
     .datatable-scroll {
       .datatable-body-row {
-        border-bottom: 1px solid $gray-200;
+        border-bottom: 1px solid var(--ct-border-soft);
       }
     }
   }
@@ -206,10 +276,8 @@
 .ngx-datatable.dt-light {
   &.material {
     .datatable-body .datatable-body-row {
-      // Zebra striping
-      &:nth-child(even) {
-        background-color: rgba($gray-100, 0.35);
-      }
+      // No zebra striping — clean white rows w/ soft dividers + hover (mockup).
+      background-color: transparent;
     }
   }
 }
@@ -222,38 +290,38 @@
   &.material {
     // Header with background
     .datatable-header {
-      border-bottom: 2px solid $gray-200;
-      background-color: $gray-100;
+      border-bottom: 2px solid var(--cui-border-color);
+      background-color: var(--cui-secondary-bg);
 
       .datatable-header-cell {
         background-color: transparent !important;
-        color: $gray-800;
+        color: var(--cui-body-color);
 
         .datatable-header-cell-label {
-          color: $gray-800;
+          color: var(--cui-body-color);
         }
       }
     }
 
     // Body with stronger row borders
     .datatable-body .datatable-body-row {
-      border-bottom: 1px solid $gray-200;
+      border-bottom: 1px solid var(--cui-border-color);
 
       // Zebra striping (stronger)
       &:nth-child(even) {
         background-color: rgba($gray-100, 0.5);
       }
 
-      // Hover (stronger)
+      // Hover (stronger) — runtime token so the tint follows the app palette.
       &:hover {
-        background-color: rgba($primary, 0.08);
+        background-color: rgba(var(--cui-primary-rgb), 0.08);
       }
     }
 
     // Footer with background
     .datatable-footer {
-      border-top: 2px solid $gray-200;
-      background-color: $gray-100;
+      border-top: 2px solid var(--cui-border-color);
+      background-color: var(--cui-secondary-bg);
     }
   }
 }
@@ -264,16 +332,16 @@
 // ============================================================
 .ngx-datatable.dt-coreui {
   &.material {
-    border: 1px solid $gray-200;
+    border: 1px solid var(--cui-border-color);
 
     // Header — CoreUI light style
     .datatable-header {
-      border-bottom: 1px solid $gray-200;
+      border-bottom: 1px solid var(--cui-border-color);
 
       .datatable-header-cell {
         background-color: transparent !important;
         color: rgba(44, 56, 74, 0.95);
-        border-right: 1px solid $gray-200;
+        border-right: 1px solid var(--cui-border-color);
 
         &:last-child {
           border-right: none;
@@ -287,10 +355,10 @@
 
     // Body — bordered cells, striped rows, hover
     .datatable-body .datatable-body-row {
-      border-bottom: 1px solid $gray-200;
+      border-bottom: 1px solid var(--cui-border-color);
 
       .datatable-body-cell {
-        border-right: 1px solid $gray-200;
+        border-right: 1px solid var(--cui-border-color);
 
         &:last-child {
           border-right: none;
@@ -310,14 +378,14 @@
 
     // Footer
     .datatable-footer {
-      border-top: 1px solid $gray-200;
+      border-top: 1px solid var(--cui-border-color);
     }
   }
 }
 
 // ─── Detail Content ────────────────────────────────
 .dt-detail-content {
-  border: 1px solid $gray-200;
+  border: 1px solid var(--cui-border-color);
   border-radius: 0.375rem;
 
   .highlight {
@@ -326,9 +394,70 @@
 }
 
 // ─── Checkbox Styling ──────────────────────────────
+// Theme-coloured, token-driven so it tracks admin/care + light/dark.
 .ngx-datatable .datatable-checkbox input[type="checkbox"] {
-  accent-color: $primary;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  vertical-align: middle;
+  // match the normal-form .form-check-input (1px border, 0.25em radius)
+  border: 1px solid var(--ct-border);
+  border-radius: 0.25em;
+  background-color: var(--ct-surface);
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+  position: relative;
+  margin: 0;
+
+  // swimlane material draws its OWN checkbox via :before (teal border/check)
+  // and :after (a white #fff square face) layered over the input — disable
+  // them so our themed, token-driven input shows instead.
+  &::before,
+  &::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  &:hover {
+    border-color: var(--cui-primary);
+  }
+
+  &:checked {
+    background-color: var(--cui-primary);
+    border-color: var(--cui-primary);
+    // white check mark
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 11px;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--ct-ring);
+  }
 }
+
+// ─── Cell initials avatar (primary-soft circle, token-driven) ──────
+.dt-cell-avatar {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background: var(--ct-primary-soft, rgba(var(--cui-primary-rgb), 0.12));
+  color: var(--cui-primary);
+  font-weight: 700;
+  line-height: 1;
+}
+.dt-cell-avatar-24 { width: 24px; height: 24px; font-size: 0.62rem; }
+.dt-cell-avatar-28 { width: 28px; height: 28px; font-size: 0.68rem; }
+.dt-cell-avatar-32 { width: 32px; height: 32px; font-size: 0.72rem; }
+.dt-cell-avatar-36 { width: 36px; height: 36px; font-size: 0.78rem; }
+.dt-cell-avatar-40 { width: 40px; height: 40px; font-size: 0.85rem; }
+.dt-cell-avatar-48 { width: 48px; height: 48px; font-size: 0.95rem; }
 
 // ─── Cell Image ────────────────────────────────────
 .dt-cell-img {
@@ -340,8 +469,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: $gray-100;
-  color: $gray-400;
+  background: var(--cui-secondary-bg);
+  color: var(--cui-tertiary-color);
   font-size: 12px;
   vertical-align: middle;
 }
@@ -387,8 +516,8 @@
     z-index: 1070;
     padding: 8px;
     border-radius: 0.375rem;
-    background-color: $white;
-    border: 1px solid $gray-300;
+    background-color: var(--ct-surface);
+    border: 1px solid var(--ct-border);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     display: none;
     pointer-events: none;
@@ -403,11 +532,11 @@
     }
     &::before {
       right: 100%;
-      border-right-color: $gray-300;
+      border-right-color: var(--ct-border);
     }
     &::after {
       right: calc(100% - 1px);
-      border-right-color: $white;
+      border-right-color: var(--ct-surface);
     }
 
     img {
@@ -440,7 +569,7 @@
 
 // ─── Group Separator ───────────────────────────────
 .dt-group-sep {
-  color: $gray-400;
+  color: var(--cui-tertiary-color);
   font-size: 0.75em;
   margin: 0 3px;
   vertical-align: middle;
@@ -509,7 +638,7 @@ $dt-tip-themes: (
 
 // Specificity battle: ngx-datatable at line ~61 has
 // `.ngx-datatable.material .datatable-body .datatable-body-row
-// .datatable-body-cell { color: $gray-800; }` — specificity (0,4,0).
+// .datatable-body-cell { color: var(--cui-body-color); }` — specificity (0,4,0).
 // Plain `.dt-tip .dt-tip-trigger` (0,2,0) loses on cascade.
 //
 // Bump specificity by prefixing with `.datatable-body-cell` so the

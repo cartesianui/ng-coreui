@@ -1,0 +1,19 @@
+<!-- Sidebar-less shell (POS / Care): nav lives in the header. The host's
+     flat navItems are passed to <app-default-header>, which renders them as
+     horizontal links in header-nav mode. -->
+<div class="wrapper d-flex flex-column min-vh-100 dark:bg-transparent">
+  <!--app-header-->
+  <app-default-header
+    class="mb-4 d-print-none header header-sticky p-0 shadow-sm"
+    position="sticky"
+    [navItems]="navItems"
+  />
+  <!--app-body-->
+  <div class="body flex-grow-1 px-3 w-100">
+    <div class="h-auto w-100">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <!--app footer-->
+  <app-default-footer></app-default-footer>
+</div>

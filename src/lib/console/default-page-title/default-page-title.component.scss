@@ -1,0 +1,32 @@
+.app-page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0 0.5rem;
+  margin-bottom: 0.5rem;
+
+  // Mockup page header: primary-soft icon badge + bold title.
+  h5 {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0;
+    font-size: 1.3125rem;          // 21px
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--cui-body-color);
+
+    i {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin: 0;
+      opacity: 1;
+      font-size: 1.05rem;
+      border-radius: var(--cui-border-radius-lg);
+      background: var(--ct-primary-soft, rgba(var(--cui-primary-rgb), 0.12));
+      color: var(--cui-primary);
+    }
+  }
+}

@@ -1,30 +1,68 @@
 import { Component, computed, inject, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { HeaderComponent, ColorModeService } from '@coreui/angular';
+import { NavSectionService } from '../../services/nav-section.service';
+import { HeaderActionsService } from '../../services/header-actions.service';
+import { NavSection, INavDataWithPermission } from '../../types';
 
 @Component({
-  selector: 'app-collapsed-header',
-  templateUrl: './collapsed-header.component.html',
-  styleUrls: ['./collapsed-header.component.scss'],
+  selector: 'app-default-header',
+  templateUrl: './default-header.component.html',
+  styleUrls: ['./default-header.component.scss'],
   standalone: false
 })
-export class CollapsedHeaderComponent extends HeaderComponent {
+export class DefaultHeaderComponent extends HeaderComponent {
+  readonly #sectionService = inject(NavSectionService);
+  readonly #headerActions = inject(HeaderActionsService);
+  readonly #router = inject(Router);
   readonly #colorModeService = inject(ColorModeService);
+
+  // ─── Light / dark theme switcher ───────────────────────────────────────
   readonly colorMode = this.#colorModeService.colorMode;
-
-  readonly colorModes = [
-    { name: 'light', text: 'Light', icon: 'cilSun' },
-    { name: 'dark', text: 'Dark', icon: 'cilMoon' },
-    { name: 'auto', text: 'Auto', icon: 'cilContrast' }
-  ];
-
-  readonly icons = computed(() => {
-    const currentMode = this.colorMode();
-    return this.colorModes.find(mode => mode.name === currentMode)?.icon ?? 'cilSun';
-  });
+  readonly isDark = computed(() => this.colorMode() === 'dark');
 
   constructor() {
     super();
+    // Persist the chosen mode across reloads (writes data-coreui-theme on <html>).
+    this.#colorModeService.localStorageItemName.set('cui-color-mode');
   }
+
+  toggleTheme(): void {
+    this.#colorModeService.colorMode.set(this.isDark() ? 'light' : 'dark');
+  }
+
+  /** Feature-contributed header buttons (e.g. POS/Care "Done for Today").
+   *  The header renders these without knowing what they do. */
+  readonly headerActions = this.#headerActions.actions;
+
+  /** Header section tabs (empty for apps not using section mode). */
+  readonly sections = this.#sectionService.sections;
+  readonly activeSectionKey = this.#sectionService.activeKey;
+
+  /**
+   * Flat header-nav mode — when a host layout passes its `navItems` here,
+   * the header renders them as horizontal links (used by the sidebar-less
+   * POS / Care shells). Title/divider entries are skipped at render time.
+   * Left empty by sidebar apps (admin), which keep their side nav.
+   */
+  @Input() navItems: INavDataWithPermission[] = [];
+
+  /** Renderable header links — drops the section titles + dividers. */
+  get headerNavLinks(): INavDataWithPermission[] {
+    return (this.navItems ?? []).filter((i) => !i.title && !i.divider && !!i.url);
+  }
+
+  /** Switch section — navigate to its default route; the layout's
+   *  router subscription then swaps the sidebar + marks the active tab. */
+  switchSection(ws: NavSection): void {
+    if (ws?.defaultRoute) {
+      this.#router.navigateByUrl(ws.defaultRoute);
+    }
+  }
+
+  // The user menu (avatar / profile / store switcher / logout) now lives in a
+  // shared <app-user-menu> — in the header for topnav apps, in the sidebar
+  // footer for console apps. All that logic moved to UserMenuComponent.
 
   @Input() sidebarId: string = 'sidebar';
 

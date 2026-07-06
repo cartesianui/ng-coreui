@@ -1,0 +1,246 @@
+// NOTE: the user dropdown menu styles moved to user-menu.component.scss
+// (the menu is now the shared <app-user-menu> component).
+
+// ─── Header bar — clean, modern shell ────────────────────────
+// Crisp surface, hairline bottom border + faint shadow, comfortable
+// height. Keeps the dense feel while reading as a deliberate app chrome.
+:host {
+  display: block;
+  background-color: var(--cui-body-bg);
+  border-bottom: 1px solid var(--cui-border-color-translucent, var(--cui-border-color));
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  ::ng-deep > .container-fluid {
+    min-height: 56px;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+// ─── Global dashboard "Home" button ──────────────────────────
+// Leading entry, left of the section tabs — the all-sections
+// overview. Quiet by default, primary tint when it's the active route.
+:host ::ng-deep .header-home {
+  gap: 0.4rem;
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--cui-body-color);
+  transition: background-color 120ms ease, color 120ms ease;
+
+  i { font-size: 0.875rem; opacity: 0.8; }
+
+  &:hover,
+  &:focus {
+    background-color: var(--cui-tertiary-bg);
+    color: var(--cui-body-color);
+  }
+
+  &.active {
+    color: var(--cui-primary);
+    background-color: rgba(var(--cui-primary-rgb), 0.1);
+    i { opacity: 1; }
+  }
+}
+
+:host ::ng-deep .header-home-divider {
+  width: 1px;
+  align-self: center;
+  height: 1.5rem;
+  margin: 0 0.25rem 0 0.5rem;
+  background-color: var(--cui-border-color);
+}
+
+// ─── Section tabs (top-level domain switcher) ──────────────
+// Flat underline tabs — not buttons. Inactive tabs are quiet muted text;
+// the active tab gets primary-colored text + a 2px underline accent that
+// sits flush with the header's bottom border. Reads as navigation, not
+// a button group.
+// Brand logo shown at the header's left in sidebar-less (header-nav) mode.
+:host ::ng-deep .header-brand {
+  padding: 0 0.25rem;
+  img { display: block; }
+}
+
+:host ::ng-deep .section-nav {
+  gap: 0.25rem;
+  align-items: stretch;
+  margin-left: 0.75rem;
+  height: 100%;
+
+  .nav-item {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .nav-item .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.65rem;
+    margin-bottom: -1px; // overlap the header's 1px bottom border
+    border-bottom: 2px solid transparent;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--cui-secondary-color);
+    transition: color 120ms ease, border-color 120ms ease;
+
+    .ws-icon {
+      font-size: 0.8125rem;
+      opacity: 0.7;
+      transition: opacity 120ms ease, color 120ms ease;
+    }
+
+    &:hover,
+    &:focus {
+      color: var(--cui-body-color);
+      border-bottom-color: var(--cui-border-color);
+
+      .ws-icon { opacity: 1; }
+    }
+
+    &.active {
+      color: var(--cui-primary);
+      font-weight: 600;
+      border-bottom-color: var(--cui-primary);
+
+      .ws-icon {
+        opacity: 1;
+        color: var(--cui-primary);
+      }
+    }
+  }
+}
+
+// ─── Top-navbar nav links (Look-A header-nav shell, e.g. Care) ───────────
+// Pill style (not underline tabs): quiet muted links, primary-soft pill when
+// active — matches the new theme's topnav mockup.
+:host ::ng-deep .app-header-nav {
+  gap: 0.25rem;
+  align-items: center;
+  margin-left: 0.75rem;
+
+  .nav-item { display: flex; align-items: center; }
+
+  .nav-item .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--cui-border-radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--cui-secondary-color);
+    transition: background-color 120ms ease, color 120ms ease;
+
+    .ws-icon { font-size: 0.85rem; opacity: 0.75; transition: opacity 120ms ease, color 120ms ease; }
+
+    &:hover,
+    &:focus {
+      color: var(--cui-body-color);
+      background-color: var(--cui-tertiary-bg);
+      .ws-icon { opacity: 1; }
+    }
+
+    &.active {
+      color: var(--cui-primary);
+      font-weight: 600;
+      background-color: rgba(var(--cui-primary-rgb), 0.1);
+      .ws-icon { opacity: 1; color: var(--cui-primary); }
+    }
+  }
+}
+
+// ─── Top-navbar tools (search pill + notification bell) ──────────────────
+:host ::ng-deep .header-tools {
+  .header-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 230px;
+    padding: 0.45rem 0.8rem;
+    margin: 0;
+    background-color: var(--cui-secondary-bg);
+    border: 1px solid var(--cui-border-color);
+    border-radius: var(--cui-border-radius-pill);
+    color: var(--cui-tertiary-color);
+
+    i { font-size: 0.8rem; }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      outline: none;
+      font: inherit;
+      font-size: 0.825rem;
+      color: var(--cui-body-color);
+
+      &::placeholder { color: var(--cui-tertiary-color); }
+    }
+
+    &:focus-within { border-color: var(--cui-primary); }
+  }
+
+  .header-bell {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--cui-border-color);
+    background-color: var(--cui-secondary-bg);
+    color: var(--cui-secondary-color);
+    cursor: pointer;
+    transition: color 120ms ease, border-color 120ms ease;
+
+    &:hover { color: var(--cui-primary); border-color: var(--cui-primary); }
+  }
+}
+
+// ─── Light/dark theme toggle — icon + label pill (source-preview Mode) ────
+:host ::ng-deep .header-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0.25rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--cui-border-color);
+  border-radius: var(--cui-border-radius);
+  background-color: var(--cui-secondary-bg);
+  color: var(--cui-body-color);
+  font-size: 0.8rem;        // ~12.5px
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
+
+  i { font-size: 0.85rem; opacity: 0.9; }
+
+  &:hover {
+    color: var(--cui-primary);
+    border-color: var(--cui-primary);
+  }
+}
+
+// Header user button — subtle hover, rounded for a softer feel.
+:host ::ng-deep button[cDropdownToggle] {
+  border: none;
+  background: transparent;
+  border-radius: 0.5rem;
+  transition: background-color 120ms ease;
+
+  &:hover,
+  &:focus {
+    background-color: var(--cui-tertiary-bg);
+  }
+}

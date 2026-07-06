@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule as CartesianCommonModule } from '@cartesianui/common';
 import { SystemNotificationsBannerComponent } from '@cartesianui/system-notification';
+import { CartaAssistantComponent } from '@cartesianui/ai-carta';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
@@ -69,28 +70,24 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import {
   DefaultFooterComponent,
   DefaultHeaderComponent,
-  DefaultLayoutComponent,
+  ConsoleLayoutComponent,
   DefaultPageTitleComponent,
-  OffcanvasComponent
-} from './default';
+  OffcanvasComponent,
+  UserMenuComponent
+} from './console';
 
 import {
-  CollapsedFooterComponent,
-  CollapsedHeaderComponent,
-  CollapsedPageTitleComponent,
-  CollapsedLayoutComponent
-} from './collapsed';
+  WorkspaceLayoutComponent
+} from './workspace';
 
 const APP_CONTAINERS = [
   OffcanvasComponent,
   DefaultFooterComponent,
   DefaultHeaderComponent,
+  UserMenuComponent,
   DefaultPageTitleComponent,
-  DefaultLayoutComponent,
-  CollapsedFooterComponent,
-  CollapsedHeaderComponent,
-  CollapsedPageTitleComponent,
-  CollapsedLayoutComponent,
+  ConsoleLayoutComponent,
+  WorkspaceLayoutComponent,
 ];
 
 @NgModule({
@@ -167,7 +164,12 @@ const APP_CONTAINERS = [
 
     // System-notification banner (standalone) — owns its own HTTP fetch
     // + render. Slotted into the default layout's notification area.
-    SystemNotificationsBannerComponent
+    SystemNotificationsBannerComponent,
+
+    // CartaAI assistant (standalone) — shell-level launcher + chat panel.
+    // Slotted into the default header. Depends only on common/core (no
+    // coreui dep), so importing it here introduces no dependency cycle.
+    CartaAssistantComponent
   ],
   declarations: [...APP_CONTAINERS],
   providers: [
@@ -176,20 +178,26 @@ const APP_CONTAINERS = [
   exports: [
     DefaultPageTitleComponent,
     OffcanvasComponent,
+    // Exposed so feature shells (e.g. the AI Workforce layout) can reuse the
+    // standard app header/footer/user-menu — an exact copy of the console
+    // chrome, no theme changes.
+    DefaultHeaderComponent,
+    DefaultFooterComponent,
+    UserMenuComponent,
     //BreadcrumbRouterService
   ]
 })
-export class BoLayoutModule {
-  static forRoot(): ModuleWithProviders<BoLayoutModule> {
+export class ShellModule {
+  static forRoot(): ModuleWithProviders<ShellModule> {
     return {
-      ngModule: BoLayoutModule,
+      ngModule: ShellModule,
       providers: []
     };
   }
 
-  static forFeature(): ModuleWithProviders<BoLayoutModule> {
+  static forFeature(): ModuleWithProviders<ShellModule> {
     return {
-      ngModule: BoLayoutModule,
+      ngModule: ShellModule,
       providers: []
     };
   }
