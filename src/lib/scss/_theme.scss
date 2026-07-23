@@ -904,6 +904,11 @@ textarea.form-control {
   font-variant-numeric: tabular-nums;
   font-weight: 500;
   color: var(--cui-body-color);
+  // A long value (e.g. a voucher's reference text) pushed past the card
+  // edge instead of wrapping: flex items default to min-width:auto, which
+  // refuses to shrink below the content's intrinsic width.
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .summary-card__value--add {
@@ -1409,6 +1414,12 @@ typeahead-container {
   transform: none !important;
   will-change: auto !important;
 }
-bs-datepicker-container {
+// Both popups are appended as plain local DOM siblings (no CDK Overlay
+// portal), so without an explicit z-index they stack by DOM order and can
+// lose to later-painted siblings — e.g. a line-item row's typeahead losing
+// to the "Add Line" button below it in a repeatable-form grid.
+// bs-datepicker-container already had this; typeahead-container didn't.
+bs-datepicker-container,
+typeahead-container {
   z-index: 1080;
 }
