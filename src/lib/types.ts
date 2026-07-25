@@ -4,6 +4,11 @@ export interface INavDataWithPermission extends INavData {
   roles?: string[]; // array of roles - user must have at least one of these roles
   permission?: string[]; // array of required permissions - user must have at least one of these permissions
   onlyFor?: string[]; // array of exclusive roles - only show if user has these specific roles (stricter than 'roles')
+  // array of entitlement keys (Cartesian\Entitlement\EntitlementRegistry) -
+  // tenant's plan must include at least one of these. UX-only hiding, not a
+  // security boundary — the BE gate is the real enforcement. See
+  // EntitlementsService.
+  entitlements?: string[];
   children?: INavDataWithPermission[];
 }
 
@@ -24,4 +29,12 @@ export interface NavSection {
   defaultRoute: string;
   /** The sidebar nav shown while this section is active. */
   nav: INavDataWithPermission[];
+  // Array of entitlement keys - tenant's plan must include at least one of
+  // these, or the WHOLE section (header tab + sidebar nav) is hidden, not
+  // just individual items. Only safe to set when EVERY item in `nav` is
+  // covered by one of these keys (or is intentionally baseline/ungated
+  // elsewhere) — omit whenever a section mixes gated content with items
+  // that aren't verified against a real entitlement key, since hiding the
+  // whole tab would incorrectly hide those too. See EntitlementsService.
+  entitlements?: string[];
 }

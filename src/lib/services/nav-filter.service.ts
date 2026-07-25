@@ -12,13 +12,17 @@ export class NavFilterService {
    * @param grantedPermissions - Array of permissions the user has
    * @param assignedRoles - Array of roles assigned to the user
    * @param debug - Enable debug logging (default: false)
+   * @param hasEntitlement - Checks whether the tenant's plan includes a given
+   *   entitlement key (default: allow everything — callers that don't pass
+   *   this, e.g. existing tests, are unaffected). See `item.entitlements`.
    * @returns Filtered navigation items
    */
   filterNavByPermissionsAndRoles(
     items: INavDataWithPermission[],
     grantedPermissions: string[],
     assignedRoles: string[],
-    debug: boolean = false
+    debug: boolean = false,
+    hasEntitlement: (key: string) => boolean = () => true
   ): INavDataWithPermission[] {
     return items
       .map((item) => {
@@ -32,26 +36,31 @@ export class NavFilterService {
         // If onlyFor is specified, it takes precedence over 'roles'
         const hasOnlyForRole = !item.onlyFor || item.onlyFor.some((r) => assignedRoles.includes(r));
 
-        // Item must satisfy permission AND role AND onlyFor requirements (if specified)
-        const hasAccess = hasPermission && hasRole && hasOnlyForRole;
+        // Check if the tenant's plan includes at least one required entitlement key
+        const hasEntitlementAccess = !item.entitlements || item.entitlements.some((e) => hasEntitlement(e));
+
+        // Item must satisfy permission AND role AND onlyFor AND entitlement requirements (if specified)
+        const hasAccess = hasPermission && hasRole && hasOnlyForRole && hasEntitlementAccess;
 
         // Debug logging for items with restrictions
-        if (debug && (item.onlyFor || item.roles || item.permission)) {
+        if (debug && (item.onlyFor || item.roles || item.permission || item.entitlements)) {
           console.log(`[Nav Filter] Item: "${item.name}" (${item.title ? 'title' : item.divider ? 'divider' : 'item'})`, {
             permission: item.permission,
             roles: item.roles,
             onlyFor: item.onlyFor,
+            entitlements: item.entitlements,
             assignedRoles,
             grantedPermissions,
             hasPermission,
             hasRole,
             hasOnlyForRole,
+            hasEntitlementAccess,
             hasAccess
           });
         }
 
         // For dividers without restrictions, always show
-        if (item.divider && !item.permission && !item.roles && !item.onlyFor) {
+        if (item.divider && !item.permission && !item.roles && !item.onlyFor && !item.entitlements) {
           return item;
         }
 
@@ -66,7 +75,8 @@ export class NavFilterService {
             item.children,
             grantedPermissions,
             assignedRoles,
-            debug
+            debug,
+            hasEntitlement
           );
 
           // If children exist after filtering, return parent with children
