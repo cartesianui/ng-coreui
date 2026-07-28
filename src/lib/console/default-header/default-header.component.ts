@@ -1,9 +1,8 @@
 import { Component, computed, inject, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { HeaderComponent, ColorModeService } from '@coreui/angular';
 import { NavSectionService } from '../../services/nav-section.service';
 import { HeaderActionsService } from '../../services/header-actions.service';
-import { NavSection, INavDataWithPermission } from '../../types';
+import { INavDataWithPermission } from '../../types';
 
 @Component({
   selector: 'app-default-header',
@@ -14,7 +13,6 @@ import { NavSection, INavDataWithPermission } from '../../types';
 export class DefaultHeaderComponent extends HeaderComponent {
   readonly #sectionService = inject(NavSectionService);
   readonly #headerActions = inject(HeaderActionsService);
-  readonly #router = inject(Router);
   readonly #colorModeService = inject(ColorModeService);
 
   // ─── Light / dark theme switcher ───────────────────────────────────────
@@ -52,13 +50,12 @@ export class DefaultHeaderComponent extends HeaderComponent {
     return (this.navItems ?? []).filter((i) => !i.title && !i.divider && !!i.url);
   }
 
-  /** Switch section — navigate to its default route; the layout's
-   *  router subscription then swaps the sidebar + marks the active tab. */
-  switchSection(ws: NavSection): void {
-    if (ws?.defaultRoute) {
-      this.#router.navigateByUrl(ws.defaultRoute);
-    }
-  }
+  // `switchSection()` was removed. The section tabs now bind
+  // `[routerLink]="ws.defaultRoute"` directly, so navigation is the router's
+  // job and the anchors carry a real href — which is what makes ctrl/cmd+click,
+  // middle-click and "Open link in new tab" work. The layout's router
+  // subscription still swaps the sidebar and marks the active tab exactly as
+  // before; it reacts to navigation, not to this method.
 
   // The user menu (avatar / profile / store switcher / logout) now lives in a
   // shared <app-user-menu> — in the header for topnav apps, in the sidebar

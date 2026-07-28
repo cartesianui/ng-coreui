@@ -47,11 +47,18 @@
       <c-header-nav class="d-none d-lg-flex me-auto section-nav">
         @for (ws of sections(); track ws.key) {
           <c-nav-item>
+            <!--
+              `routerLink`, not a (click) handler. An <a> with only a click
+              handler renders no href, so ctrl/cmd+click, middle-click and
+              "Open link in new tab" all silently do nothing — and
+              role="button" additionally announced it as a button rather than
+              a link. routerLink emits a real href AND keeps client-side
+              navigation on a plain click, so the browser handles the
+              modifier gestures natively.
+            -->
             <a cNavLink
-               role="button"
-               style="cursor: pointer;"
-               [class.active]="ws.key === activeSectionKey()"
-               (click)="switchSection(ws)">
+               [routerLink]="ws.defaultRoute"
+               [class.active]="ws.key === activeSectionKey()">
               @if (ws.icon) { <i [ngClass]="ws.icon" class="me-2 ws-icon"></i> }
               <span>{{ ws.label }}</span>
             </a>
