@@ -71,6 +71,10 @@ export class NavFilterService {
 
         // Handle children recursively
         if (item.children?.length) {
+          if (!hasAccess) {
+            return null;
+          }
+
           const filteredChildren = this.filterNavByPermissionsAndRoles(
             item.children,
             grantedPermissions,
@@ -79,11 +83,19 @@ export class NavFilterService {
             hasEntitlement
           );
 
-          // If children exist after filtering, return parent with children
-          // But only if parent itself has access
-          if (filteredChildren.length > 0 && hasAccess) {
+          if (filteredChildren.length > 0) {
             return { ...item, children: filteredChildren };
           }
+
+          // Every child was filtered out. The old code fell through and
+          // returned the ORIGINAL item — unfiltered children and all — so a
+          // parent whose children were all permission-denied reappeared with
+          // its full child list (known since fe-entitlement-nav, fixed here
+          // as RPH-022; reachable once parents AND children carry tags).
+          // A childless parent is only worth showing if it is a destination
+          // in its own right; a pure grouping node with nothing left in it
+          // is dropped.
+          return item.url ? { ...item, children: undefined } : null;
         }
 
         // If no children, return only items user has access to

@@ -19,7 +19,7 @@ function isOverflown(element: HTMLElement) {
   standalone: false
 })
 export class ConsoleLayoutComponent {
-  protected permissonService = inject(PermissionCheckerService);
+  protected permissionService = inject(PermissionCheckerService);
   private navFilterService = inject(NavFilterService);
   private sectionService = inject(NavSectionService);
   private entitlementsService = inject(EntitlementsService);
@@ -61,8 +61,11 @@ export class ConsoleLayoutComponent {
   }
 
   private rebuild(url: string): void {
-    const grantedPermissions = this.permissonService.getGrantedPermissions() as unknown as string[];
-    const assignedRoles = this.permissonService.getAllAssignedRoles();
+    // No cast needed anymore — getGrantedPermissions() is honestly typed
+    // string[] now (RPH-020); the old `as unknown as string[]` papered over
+    // a stale map-shaped annotation.
+    const grantedPermissions = this.permissionService.getGrantedPermissions();
+    const assignedRoles = this.permissionService.getAllAssignedRoles();
     const hasEntitlement = (key: string) => this.entitlementsService.has(key);
 
     const filterNav = (items: INavDataWithPermission[]): INavDataWithPermission[] =>
@@ -75,15 +78,21 @@ export class ConsoleLayoutComponent {
       // nav; the header renders the section tabs. Active section is derived
       // from the URL so deep links / refresh land on the right one.
       //
-      // A section with `entitlements` set is dropped ENTIRELY (tab + nav)
-      // when the tenant has none of the listed keys — distinct from the
-      // per-item filtering in `filterNav` below, which only hides items
-      // WITHIN a still-visible section. Only sections fully covered by
-      // their listed keys get this (see NavSection.entitlements doc) — a
-      // section mixing gated and ungated/unverified items never sets it,
-      // so this never risks hiding an always-on item along with the tab.
+      // A section with `entitlements`/`permission`/`roles` set is dropped
+      // ENTIRELY (tab + nav) when the caller fails that gate — distinct from
+      // the per-item filtering in `filterNav` below, which only hides items
+      // WITHIN a still-visible section. Same semantics as the per-item
+      // filter: any-of within each tag, all-of across tags, absent tag =
+      // pass. Only sections fully covered by their listed keys should set
+      // one (see the NavSection field docs) — a section mixing gated and
+      // ungated/unverified items never sets it, so this never risks hiding
+      // an always-on item along with the tab. `permission`/`roles` added by
+      // RPH-025 (sections previously could not be permission-gated at all).
       const visibleSections = this.sections.filter(
-        (ws) => !ws.entitlements || ws.entitlements.some((e) => hasEntitlement(e))
+        (ws) =>
+          (!ws.entitlements || ws.entitlements.some((e) => hasEntitlement(e))) &&
+          (!ws.permission || ws.permission.some((p) => grantedPermissions.includes(p))) &&
+          (!ws.roles || ws.roles.some((r) => assignedRoles.includes(r)))
       );
       const filtered: NavSection[] = visibleSections.map((ws) => ({ ...ws, nav: filterNav(ws.nav) }));
       this.sectionService.setSections(filtered);

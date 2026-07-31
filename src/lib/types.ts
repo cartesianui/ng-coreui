@@ -37,4 +37,19 @@ export interface NavSection {
   // that aren't verified against a real entitlement key, since hiding the
   // whole tab would incorrectly hide those too. See EntitlementsService.
   entitlements?: string[];
+  // Permission gate for the WHOLE section (header tab + sidebar nav) —
+  // caller must hold at least one of these (RPH-025,
+  // roles-permission-hardening; sections previously had entitlements only,
+  // so a tab could not be permission-gated at all). Same any-of semantics
+  // and the same "only set when every item in `nav` is covered" caution as
+  // `entitlements` above. Tag values should follow ADR-004's any-of
+  // listing-verb convention: ['list:x','list:group:x','list:any:x',
+  // 'read:any:x','manage:x']. UX-only, not a security boundary — the route
+  // guard + BE are the enforcement.
+  permission?: string[];
+  // Role gate for the WHOLE section — caller must have at least one of
+  // these role names. Same semantics/cautions as `permission`. Prefer
+  // permission tags (ADR-004); role tags are for genuinely role-shaped
+  // sections (e.g. talent's artist/agent surfaces).
+  roles?: string[];
 }

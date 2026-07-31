@@ -17,7 +17,7 @@ import { resolveNavLabels } from '../utils/nav-label.util';
   standalone: false
 })
 export class WorkspaceLayoutComponent {
-  protected permissonService = inject(PermissionCheckerService);
+  protected permissionService = inject(PermissionCheckerService);
   private navFilterService = inject(NavFilterService);
   private entitlementsService = inject(EntitlementsService);
 
@@ -37,8 +37,11 @@ export class WorkspaceLayoutComponent {
   }
 
   private rebuild(): void {
-    const grantedPermissions = this.permissonService.getGrantedPermissions() as unknown as string[];
-    const assignedRoles = this.permissonService.getAllAssignedRoles();
+    // No cast needed anymore — getGrantedPermissions() is honestly typed
+    // string[] now (RPH-020); the old `as unknown as string[]` papered over
+    // a stale map-shaped annotation.
+    const grantedPermissions = this.permissionService.getGrantedPermissions();
+    const assignedRoles = this.permissionService.getAllAssignedRoles();
     const hasEntitlement = (key: string) => this.entitlementsService.has(key);
 
     const filtered = this.navFilterService.filterNavByPermissionsAndRoles(
