@@ -5,7 +5,7 @@ export interface UserMenuItem {
   /** Stable id (unique within its section). */
   id: string;
   label: string;
-  /** Font Awesome class (e.g. 'fa fa-store'). */
+  /** Font Awesome class (e.g. 'fa-solid fa-store'). */
   icon?: string;
   /** Highlighted as the current selection. */
   active?: boolean;

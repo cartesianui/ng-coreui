@@ -1,5 +1,5 @@
 import { Component, computed, inject, Input } from '@angular/core';
-import { SessionService, TokenService } from '@cartesianui/core';
+import { AuthHttpService, SessionService, TokenService } from '@cartesianui/core';
 import { HeaderActionsService } from '../../services/header-actions.service';
 import { UserMenuSectionsService } from '../../services/user-menu-sections.service';
 
@@ -25,6 +25,7 @@ export class UserMenuComponent {
 
   readonly #sessionService = inject(SessionService);
   readonly #tokenService = inject(TokenService);
+  readonly #authHttp = inject(AuthHttpService);
   readonly #headerActions = inject(HeaderActionsService);
   readonly #menuSections = inject(UserMenuSectionsService);
 
@@ -58,8 +59,18 @@ export class UserMenuComponent {
   readonly canManageWorkspace = computed(() => this.#sessionService.isHostAdmin || this.#sessionService.isTenantAdmin);
 
   logout(): void {
-    this.#tokenService.clearToken();
-    this.#tokenService.clearRefreshToken();
-    location.href = '/';
+    // The HttpOnly `refreshToken` cookie (separate from the JS-visible
+    // `Cartesian.AuthRefreshToken` one — see AuthHttpService) can only be
+    // cleared by the server. Skipping this call is why logout "worked"
+    // locally but CartesianHttpInterceptor would silently mint a fresh
+    // access token off that cookie on the next 401. Wait for it (success
+    // or failure — AuthHttpService already swallows errors) before wiping
+    // local state and navigating away, so the request isn't cancelled
+    // mid-flight by the redirect.
+    this.#authHttp.logout().subscribe(() => {
+      this.#tokenService.clearToken();
+      this.#tokenService.clearRefreshToken();
+      location.href = '/';
+    });
   }
 }

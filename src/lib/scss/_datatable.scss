@@ -567,6 +567,104 @@
 .dt-cell-img-preview-large    .dt-cell-img-preview img { max-width: 400px; max-height: 400px; }
 .dt-cell-img-preview-product  .dt-cell-img-preview img { max-width: 320px; max-height: 320px; }
 
+// ─── Copy-to-clipboard (reusable formatter affordance) ─────
+// Output by FormatterRegistry.register('copy', ...) in
+// @cartesianui/common/formatter.utils. Click is wired by
+// AppDatatableComponent.onCellClick (delegated — [innerHTML] can't carry a
+// real onclick), which toggles `.dt-copy--done` for the checkmark swap.
+.dt-copy {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  color: inherit;
+
+  .dt-copy-text {
+    background: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  // Carries the full value as TEXT CONTENT (never attribute-sanitized) for
+  // AppDatatableComponent.tryCopyFromEvent to read — not rendered.
+  .dt-copy-value {
+    display: none;
+  }
+
+  .dt-copy-icon,
+  .dt-copy-icon-check {
+    font-size: 0.8125rem;
+    color: var(--cui-tertiary-color);
+  }
+
+  .dt-copy-icon-check {
+    display: none;
+    color: var(--cui-success, #2eb85c);
+  }
+
+  &:hover .dt-copy-icon {
+    color: var(--cui-body-color);
+  }
+
+  // "Copied!" bubble — standard copy-button affordance (GitHub/VS Code
+  // style): a small floating label above the trigger, shown only while
+  // `.dt-copy--done` is toggled on (see AppDatatableComponent.tryCopyFromEvent),
+  // pure CSS otherwise. Escapes ngx-datatable's `overflow: hidden` the same
+  // way the image hover-preview above does.
+  &.dt-copy--done {
+    .dt-copy-icon { display: none; }
+    .dt-copy-icon-check { display: inline-block; }
+
+    &::after {
+      content: 'Copied!';
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 2px 8px;
+      border-radius: 0.25rem;
+      background-color: var(--cui-dark, #1f2937);
+      color: #fff;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      z-index: 1070;
+      pointer-events: none;
+      animation: dt-copy-bubble-fade 1.2s ease forwards;
+    }
+  }
+}
+
+.datatable-body-cell:has(.dt-copy--done),
+.datatable-row-wrapper:has(.dt-copy--done),
+.datatable-body:has(.dt-copy--done),
+.datatable-scroll:has(.dt-copy--done) {
+  overflow: visible !important;
+}
+
+@keyframes dt-copy-bubble-fade {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(2px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+// Link-cell wrapper — replaces what used to be a real <a> (see
+// datatable.component.html): same clickable/link look via CSS, but not an
+// actual anchor, so a nested copy-icon trigger doesn't end up as
+// interactive-content-inside-interactive-content.
+.dt-link-cell {
+  cursor: pointer;
+  color: var(--cui-link-color);
+
+  &:hover {
+    color: var(--cui-link-hover-color);
+    text-decoration: underline;
+  }
+}
+
 // ─── Group Separator ───────────────────────────────
 .dt-group-sep {
   color: var(--cui-tertiary-color);

@@ -11,7 +11,10 @@
   <!--app-body-->
   <div class="body flex-grow-1 px-3 w-100">
     <div class="h-auto w-100">
-      <system-notifications-banner></system-notifications-banner>
+      <!-- System notifications intentionally omitted here — this shell is
+           POS/Care only; those are shift/patient-facing consoles where a
+           host-wide announcement banner doesn't belong. Admin/Talent/
+           Workforce (ConsoleLayoutComponent) still show it. -->
       <router-outlet></router-outlet>
     </div>
   </div>
