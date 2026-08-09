@@ -24,7 +24,7 @@ export class NavFilterService {
     debug: boolean = false,
     hasEntitlement: (key: string) => boolean = () => true
   ): INavDataWithPermission[] {
-    return items
+    const filtered = items
       .map((item) => {
         // Check if item has permission requirement
         const hasPermission = !item.permission || item.permission.some((p) => grantedPermissions.includes(p));
@@ -102,5 +102,58 @@ export class NavFilterService {
         return hasAccess ? item : null;
       })
       .filter(Boolean) as INavDataWithPermission[];
+
+    return this.pruneEmptyGroups(filtered);
+  }
+
+  /**
+   * Drop group headers (`title` / `divider`) that no longer have anything
+   * under them.
+   *
+   * An untagged `title` always passes the filter above — it carries no
+   * permission of its own — so gating the ITEMS in a group leaves the heading
+   * behind with nothing beneath it. Observed as a doctor seeing bare
+   * "Insights" / "General" / "System" headings in the Admin section: the only
+   * entry each still had was one that happened to be ungated.
+   *
+   * Tagging every heading to match its contents is not a fix — it duplicates
+   * each group's rules in a second place and silently rots the moment an item
+   * is added or its gate changes. Emptiness is derived here instead, so a
+   * group disappears exactly when its last visible item does.
+   *
+   * Headers are buffered and only emitted once a real item follows; a trailing
+   * run is dropped, which also removes a separator left dangling at the end.
+   *
+   * A `title` RESETS the buffer rather than appending to it: reaching a new
+   * heading proves the previous one never got any content, so it must be
+   * discarded there and then. Merely appending would resurrect it the moment
+   * any later group had a visible item — which is exactly what happened in
+   * testing, where a doctor kept an empty "General" heading because "Settings"
+   * appeared further down under "System".
+   */
+  private pruneEmptyGroups(items: INavDataWithPermission[]): INavDataWithPermission[] {
+    const out: INavDataWithPermission[] = [];
+    let pendingHeaders: INavDataWithPermission[] = [];
+
+    for (const item of items) {
+      if (item.title) {
+        pendingHeaders = [item];
+        continue;
+      }
+
+      if (item.divider) {
+        pendingHeaders.push(item);
+        continue;
+      }
+
+      if (pendingHeaders.length) {
+        out.push(...pendingHeaders);
+        pendingHeaders = [];
+      }
+
+      out.push(item);
+    }
+
+    return out;
   }
 }
