@@ -111,10 +111,55 @@ export class ConsoleLayoutComponent {
       // Sidebar still shows a section's nav (resolved, else the last active,
       // else the first) so the global overview isn't left with an empty rail.
       const sidebarKey = activeKey ?? resolved ?? previous ?? filtered[0]?.key ?? null;
-      this.navItems = filtered.find((w) => w.key === sidebarKey)?.nav ?? [];
+      this.applyNavItems(filtered.find((w) => w.key === sidebarKey)?.nav ?? []);
     } else {
       // Flat mode (default) — unchanged behavior for apps without sections.
-      this.navItems = filterNav(this.flatNavItems ?? []);
+      this.applyNavItems(filterNav(this.flatNavItems ?? []));
     }
+  }
+
+  /** Structure of the last rendered nav, so an unchanged rebuild is a no-op. */
+  private navSignature: string | null = null;
+
+  /**
+   * Reassign `navItems` ONLY when the nav actually changed.
+   *
+   * `rebuild()` runs on every NavigationEnd and `filterNav()` rebuilds the
+   * tree from scratch, so this used to hand `<c-sidebar-nav>` a brand-new
+   * array on every single navigation. The component re-rendered the whole
+   * tree and lost its internal dropdown state — which is why opening a child
+   * (Bill Vouchers) collapsed its parent group (Journal Vouchers) the moment
+   * the route resolved. It affected every group, not just that one.
+   *
+   * The nav depends on permissions, roles, entitlements and the active
+   * section — never on which page you are on. So when the resulting structure
+   * is identical, keeping the previous array reference is both correct and
+   * cheaper: no re-render, and the sidebar keeps whatever the operator opened.
+   *
+   * The signature covers names, urls and nesting rather than whole objects,
+   * so a dynamic badge or label cannot force a spurious re-render.
+   */
+  private applyNavItems(items: INavDataWithPermission[]): void {
+    const signature = this.signatureOf(items);
+
+    if (signature === this.navSignature) {
+      return;
+    }
+
+    this.navSignature = signature;
+    this.navItems = items;
+  }
+
+  private signatureOf(items: INavDataWithPermission[]): string {
+    return JSON.stringify(
+      (items ?? []).map(function shape(item: any): any {
+        return [
+          item.name ?? item.title ?? '',
+          item.url ?? '',
+          item.divider ? 1 : 0,
+          (item.children ?? []).map(shape)
+        ];
+      })
+    );
   }
 }
