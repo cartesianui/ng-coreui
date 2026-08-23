@@ -1423,3 +1423,33 @@ bs-datepicker-container,
 typeahead-container {
   z-index: 1080;
 }
+
+// ── Document cancel dialogue (shared by PO / RN / bill / invoice / payment) ──
+// The dialogue lives in a full-width offcanvas; these are the few rules its
+// template cannot express with utilities: a summary strip, a footer rule, and
+// toggle groups that wrap instead of overflowing at narrow widths.
+.document-cancel {
+  &__summary {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--ct-border);
+    border-radius: var(--ct-radius-sm);
+    background-color: var(--cui-secondary-bg);
+  }
+  &__number {
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+  }
+  &__footer {
+    border-top: 1px solid var(--ct-border-soft);
+  }
+  // Three-option groups ("Already refunded / Refund expected / Leave as credit")
+  // must not overflow a narrow card: let the labels wrap, keep the group full width.
+  .btn-group.w-100 > .btn {
+    white-space: normal;
+    line-height: 1.25;
+  }
+  // A chosen route stands out by ring, not by a thick side bar.
+  .border-primary.rounded {
+    box-shadow: 0 0 0 2px var(--ct-ring);
+  }
+}

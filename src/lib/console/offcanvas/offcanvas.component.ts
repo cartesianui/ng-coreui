@@ -34,6 +34,17 @@ export class OffcanvasComponent {
   @Input() title: string;
   @Input() subTitle: string;
   @Input() visible: boolean = false;
+
+  /**
+   * Optional override for the drawer's width, e.g. `min(900px, 95vw)`.
+   *
+   * Omitted, CoreUI's own `.offcanvas-end` width applies — so every existing
+   * caller is unaffected. Set it when the panel hosts something that genuinely
+   * needs the room, such as a side-by-side layout that would otherwise be
+   * squeezed into a single narrow column.
+   */
+  @Input() width?: string;
+
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter();
 
   public constructor() {}

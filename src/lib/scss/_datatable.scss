@@ -252,6 +252,24 @@
     }
   }
 
+  // ─── Embedded Variant ────────────────────────────
+  // A listing's table living inside another document (the Bills / Payments
+  // tabs on PO, RN, SO and DN edit screens). Same header strip, badges and
+  // row rhythm as the page listings; the frame below stands in for the page
+  // card, no footer, no search. Use with `.dt-embedded` on the wrapper.
+  &.embedded {
+    .datatable-header {
+      border-bottom: 1px solid var(--ct-border);
+    }
+    .datatable-body .datatable-body-row {
+      border-bottom: 1px solid var(--ct-border-soft);
+      &:last-child { border-bottom: 0; }
+    }
+    .empty-row {
+      padding: 1.75rem 1rem;
+    }
+  }
+
   // ─── Compact Variant ─────────────────────────────
   &.compact {
     font-size: 0.8125rem;
@@ -877,4 +895,55 @@ $dt-tip-clip-parents:
 .card:has(.dt-tip-trigger:focus-visible) {
   position: relative;
   z-index: 6;
+}
+
+// ============================================================
+// EMBEDDED FRAME — wraps `app-datatable` inside a document's tab.
+// One bordered, rounded surface: an optional toolbar row (title, count,
+// a primary action), the table flush beneath it, an optional summary foot.
+// ============================================================
+.dt-embedded {
+  border: 1px solid var(--ct-border);
+  border-radius: var(--ct-radius-sm);
+  background-color: var(--ct-surface);
+  overflow: hidden;
+
+  &__bar,
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--ct-text-muted);
+    min-height: 2.5rem;
+  }
+  &__bar  { border-bottom: 1px solid var(--ct-border-soft); }
+  &__foot { border-top: 1px solid var(--ct-border-soft); background-color: var(--cui-secondary-bg); }
+
+  &__title {
+    color: var(--ct-text);
+    font-weight: 600;
+  }
+  &__note {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--ct-danger);
+    border-bottom: 1px solid var(--ct-border-soft);
+  }
+
+  // Row actions share the listings' quiet link-button idiom.
+  .dt-embedded__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+  }
+  .dt-embedded__sub {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--ct-text-muted);
+    line-height: 1.3;
+  }
 }

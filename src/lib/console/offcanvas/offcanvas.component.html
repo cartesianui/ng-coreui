@@ -1,9 +1,10 @@
-<c-offcanvas 
-  [placement]="'end'" 
-  [backdrop]="false" 
-  [scroll]="false" 
-  [id]="id" 
-  [visible]="visible" 
+<c-offcanvas
+  [placement]="'end'"
+  [backdrop]="false"
+  [scroll]="false"
+  [id]="id"
+  [visible]="visible"
+  [style.width]="width || null"
   (visibleChange)="visibleChange.emit($event)">
 
   <div cOffcanvasHeader class="offcanvas-header">
